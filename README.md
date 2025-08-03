@@ -1,1 +1,1 @@
-# LiesofPractise
+# LiesOfPractice

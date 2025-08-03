@@ -1,12 +1,29 @@
-﻿<Window x:Class="LiesOfPractise.MainWindow"
+﻿<Window x:Class="LiesOfPractice.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LiesOfPractise"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:local="clr-namespace:LiesOfPractice"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Lies of Practice" 
+        Height="650" Width="500" 
+        MinHeight="350" MinWidth="300"
+        WindowStartupLocation="CenterScreen"
+        ui:ThemeManager.IsThemeAware="True"
+        ui:WindowHelper.UseModernWindowStyle="True">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Margin="5" FontSize="12" Padding="5"
+                Content="Launchgame" Command="{Binding LaunchGameCommand}">
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
     </Grid>
 </Window>
