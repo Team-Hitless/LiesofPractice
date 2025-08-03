@@ -34,5 +34,17 @@ namespace LiesOfPractice.Properties {
                 this["Gamepath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CheckforUpdates {
+            get {
+                return ((bool)(this["CheckforUpdates"]));
+            }
+            set {
+                this["CheckforUpdates"] = value;
+            }
+        }
     }
 }

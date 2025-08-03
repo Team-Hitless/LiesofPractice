@@ -1,4 +1,5 @@
 ﻿using LiesOfPractice.Interfaces;
+using LiesOfPractice.Properties;
 using LiesOfPractice.Viewmodels;
 using Octokit;
 using System.Reflection;
@@ -6,12 +7,12 @@ using System.Text.RegularExpressions;
 
 namespace LiesOfPractice.Services;
 
-public class GitHubService(IWindowService windowService, GitHubViewModel gitHubView) : IGitHubService
+public class GitHubService(IWindowService windowService, GitHubViewModel gitHubView, Settings settings) : IGitHubService
 {
     const long repoId = 1028636440;
     public async Task CheckGitHubNewerVersion()
     {
-        //if (!dataService.Config.Settings.CheckUpdates) return;
+        if (!settings.CheckforUpdates) return;
 
         GitHubClient client = new(new ProductHeaderValue("LiesOfPractice"));
         IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(repoId);

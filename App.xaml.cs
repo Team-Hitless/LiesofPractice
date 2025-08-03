@@ -42,6 +42,7 @@ public partial class App : Application
     {
         _serviceProvider.GetService<IGitHubService>()?.CheckGitHubNewerVersion();
         _serviceProvider.GetService<IGameLaunchService>()?.InitGameExePath();
+        _serviceProvider.GetService<Settings>()?.Reload();
         
         var startForm = _serviceProvider.GetRequiredService<MainWindow>();
         startForm.Show();
