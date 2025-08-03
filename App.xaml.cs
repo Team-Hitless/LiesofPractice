@@ -25,6 +25,7 @@ public partial class App : Application
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IGitHubService, GitHubService>();
         services.AddSingleton<IGameLaunchService, GameLaunchService>();
+        services.AddSingleton<IJsonService, JsonService>();
 
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<GitHubViewModel>();
