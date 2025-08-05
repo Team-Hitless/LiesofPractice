@@ -22,4 +22,11 @@ public class TempService(MemoryIo memoryIo)
 
     public void ToggleAllTeleports(bool isEnabled) =>
         memoryIo.WriteByte((IntPtr)memoryIo.ReadInt64(Offsets.ActivateAllTeleports.Base), isEnabled ? 1 : 0);
+
+    public void ToggleChrDebugFlagA(bool isEnabled, int debugFlagOffset) =>
+        memoryIo.WriteByte(Offsets.DebugFlagsBaseA.Base + debugFlagOffset, isEnabled ? 1 : 0);
+    
+    public void ToggleAiDisable(bool isDisabled) =>
+        memoryIo.WriteByte(Offsets.DebugFlagsBaseA.Base + (int)Offsets.DebugFlagsBaseA.Flags.EnableAi, isDisabled ? 0 : 1);
+
 }
