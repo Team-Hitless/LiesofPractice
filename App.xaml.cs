@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Data;
 using System.Windows;
 using System.Windows.Threading;
+using LiesOfPractice.Memory;
 
 namespace LiesOfPractice;
 
@@ -22,12 +23,17 @@ public partial class App : Application
     public App()
     {
         var services = new ServiceCollection();
+        
+        services.AddSingleton<MemoryIo>();
+        services.AddSingleton<AoBScanner>();
+        services.AddSingleton<TempService>();
+        services.AddSingleton<IDataService, DataService>();
 
         services.AddScoped<IWindowService, WindowService>();
         services.AddScoped<IGitHubService, GitHubService>();
         services.AddScoped<IGameLaunchService, GameLaunchService>();
         services.AddScoped<IJsonService, JsonService>();
-        services.AddSingleton<IDataService, DataService>();
+        
 
         services.AddSingleton<MainViewModel>();
         services.AddScoped<GitHubViewModel>();

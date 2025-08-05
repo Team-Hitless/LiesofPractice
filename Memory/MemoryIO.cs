@@ -371,10 +371,10 @@ public class MemoryIo : IDisposable
         WriteInt32(wordAddr, (int)newValue);
     }
 
-    public bool IsGameLoaded()
-    {
-        return (IntPtr) ReadUInt64((IntPtr)ReadUInt64(Offsets.WorldChrMan.Base) + Offsets.WorldChrMan.PlayerIns)!= IntPtr.Zero;
-    }
+    // public bool IsGameLoaded()
+    // {
+    //     return (IntPtr) ReadUInt64((IntPtr)ReadUInt64(Offsets.WorldChrMan.Base) + Offsets.WorldChrMan.PlayerIns)!= IntPtr.Zero;
+    // }
     
     public void AllocCodeCave()
     {

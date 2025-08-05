@@ -4,106 +4,21 @@ namespace LiesOfPractice.Memory;
 
 public static class Offsets
 {
-    public static class WorldChrMan
+    public static class GiveErgoEntity
     {
         public static IntPtr Base;
-        public const int PlayerIns = 0x80;
-        public static int DeathCam = 0x90;
 
-
-        public static class PlayerInsOffsets
+        public enum ErgoEntity
         {
-            public const int PadMan = 0x58;
-            public static int CharFlags1;
-            public static int Modules;
-        }
-      
-        
-        public enum ChrFlag1BitFlag
-        {
-            DisableAi = 11,
-            NoGoodsConsume = 19
-        }
-
-        public enum Modules
-        {
-            ChrDataModule = 0x18,
-            ChrResistModule = 0x20,
-            ChrBehaviorModule = 0x28,
-            ChrSuperArmorModule = 0x40,
-            ChrEventModule = 0x58,
-            ChrPhysicsModule = 0x68
-        }
-        public const int ForceAnimationOffset = 0x20;
-
-        public const int CsChrProxy = 0xA8;
-        public const int CsHkCharacterProxy = 0x40;
-        public const int TargetCoordsOffset = 0x70;
-
-        public enum ChrDataModule
-        {
-            Hp = 0xD8,
-            MaxHp = 0xDC,
-            Mp = 0xE4,
-            Stam = 0xF0,
-            ChrFlags2 = 0x1C0
-        }
-
-        public enum ChrFlags2 : byte
-        {
-            NoDamage = 1 << 1,
-            NoDeath = 1 << 2,
-            InfiniteStam = 1 << 4,
-        }
-
-        public enum ChrResistModule
-        {
-            PoisonCurrent = 0x10,
-            ToxicCurrent = 0x14,
-            BleedCurrent = 0x18,
-            FrostCurrent = 0x20,
-            PoisonMax = 0x24,
-            ToxicMax = 0x28,
-            BleedMax = 0x2C,
-            FrostMax = 0x34
-        }
-
-
-        public static class ChrBehaviorModule
-        {
-            public static int AnimSpeed = 0xA58;
-            public static int CurrentAnimation = 0x898;
-        }
-   
-        public enum ChrSuperArmorModule
-        {
-            InfinitePoise = 0x10,
-            Poise = 0x28,
-            MaxPoise = 0x2C,
-            PoiseTimer = 0x34,
-        }
-
-        public const byte InfinitePoise = 1 << 0;
-
-        public enum ChrPhysicsModule
-        {
-            Angle = 0x74,
-            X = 0x80,
-            Z = 0x84,
-            Y = 0x88,
+            Ptr1 = 0,
+            Ptr2 = 0x20
         }
     }
 
-    public static class GameMan
+    public static class ActivateAllTeleports
     {
         public static IntPtr Base;
-        public const int LastBonfire = 0xACC;
-    }
 
-    public static class DamageMan
-    {
-        public static IntPtr Base;
-        public const int HitboxView = 0x30;
     }
 
     public static class EventFlagMan
@@ -135,6 +50,7 @@ public static class Offsets
             Souls = 0x74,
             TotalSouls = 0x78
         }
+
         public const int NewGame = 0x78;
         public const int InGameTime = 0xA4;
     }
@@ -197,7 +113,7 @@ public static class Offsets
         public const int Height = 0x4;
         public const int Width = 0x5;
     }
-    
+
     public static class MapItemMan
     {
         public static IntPtr Base;
@@ -215,10 +131,9 @@ public static class Offsets
     {
         public static IntPtr Base;
     }
-    
+
     public static class EnemyIns
     {
-        
         public const int ComManipulator = 0x58;
 
         public enum ComManipOffsets
@@ -226,7 +141,7 @@ public static class Offsets
             EnemyId = 0x390,
             AiIns = 0x320
         }
-        
+
         public enum AiInsOffsets
         {
             AiFunc = 0x8,
@@ -248,7 +163,7 @@ public static class Offsets
             Bleed = 0x170,
             FrostBite = 0x178
         }
-        
+
         public enum LuaNumbers
 
         {
@@ -256,9 +171,8 @@ public static class Offsets
             GwynLightningRainNumberIndex = 1,
             PhaseTransitionCounterNumberIndex = 2
         }
-        
+
         public const int CurrentPhaseOffset = 0x1FF0;
-        
     }
 
     public static class FieldArea
@@ -272,7 +186,7 @@ public static class Offsets
         public const int ChrExFollowCam = 0x60;
         public const int CameraDownLimit = 0x200;
     }
-    
+
     public static class GroupMask
     {
         public static IntPtr Base;
@@ -308,8 +222,8 @@ public static class Offsets
         public static IntPtr FreeCam;
         public static IntPtr AccessFullShop;
     }
-    
-    
+
+
     public static class Hooks
     {
         public static long LastLockedTarget;
@@ -323,12 +237,11 @@ public static class Offsets
         public static long CameraUpLimit;
         public static long ItemLotBase;
         public static long ArgoSpeed;
-
     }
 
     public static class Funcs
     {
-        public static long Warp;
+        public static long GiveErgo;
         public static long ItemSpawn;
         public static long SetEvent;
         public static long Travel;

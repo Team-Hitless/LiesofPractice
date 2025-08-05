@@ -4,18 +4,40 @@ using LiesOfPractice.Models;
 using LiesOfPractice.Properties;
 using LiesOfPractice.Services;
 using System.Windows.Input;
+using System.Windows.Threading;
+using LiesOfPractice.Memory;
+using LiesOfPractice.Services;
 
 namespace LiesOfPractice.Viewmodels;
 public class MainViewModel: ViewModelBase
 {
     private readonly IGameLaunchService _gameLaunchService;
     private readonly IDataService _dataService;
+    private readonly MemoryIo _memoryIo;
+    private readonly TempService _tempService;
+    private readonly AoBScanner _aoBScanner;
+    private readonly DispatcherTimer _gameTimer;
+    
+    private bool _hasScanned;
+    private bool _hasAllocatedMemory;
 
-    public MainViewModel(IGameLaunchService gameLaunchService, IDataService dataService)
+    public MainViewModel(IGameLaunchService gameLaunchService, MemoryIo memoryIo, AoBScanner aoBScanner, TempService tempService, IDataService dataService)
     {
         _gameLaunchService = gameLaunchService;
+        _memoryIo = memoryIo;
+        _memoryIo.StartAutoAttach();
+        _aoBScanner = aoBScanner;
+        _tempService = tempService;
+        
         _dataService = dataService;
         LaunchGameCommand = new DelegateCommand(LaunchGame);
+        
+        _gameTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(25)
+        };
+        _gameTimer.Tick += Timer_Tick;
+        _gameTimer.Start();
         SelectGamepathCommand = new DelegateCommand(SelectGamepath);
     }
     #region Commands
@@ -24,6 +46,17 @@ public class MainViewModel: ViewModelBase
     #endregion
 
     #region Public Properies
+    private bool _isAttached;
+    public bool IsAttached 
+    { 
+        get => _isAttached;
+        set
+        {
+            if (_isAttached == value) return;
+            _isAttached = value;
+            OnPropertyChanged(nameof(IsAttached));
+        }
+    }
     public AppSettings AppSettings
     {
         get => _dataService.AppSettings;
@@ -40,6 +73,24 @@ public class MainViewModel: ViewModelBase
 
     #region Private Methods
     private void LaunchGame(object? obj) => _gameLaunchService.LaunchGame();
+    
+    private void Timer_Tick(object? sender, EventArgs e)
+    {
+        if (_memoryIo.IsAttached)
+        {
+            IsAttached = true;
+            if (!_hasScanned)
+            {
+                _aoBScanner.Scan();
+                _hasScanned = true;
+            }
+        }
+        else
+        {
+            IsAttached = false;
+            
+        }
+    }
     private void SelectGamepath(object? obj) => _gameLaunchService.SelectGamepath();
     #endregion
 }
