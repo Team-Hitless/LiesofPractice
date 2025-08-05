@@ -71,7 +71,9 @@ public class MainViewModel: ViewModelBase
             {
                 _aoBScanner.Scan();
                 _hasScanned = true;
+                Console.WriteLine($"Base: 0x{_memoryIo.BaseAddress.ToInt64():X}");
             }
+            
         }
         else
         {

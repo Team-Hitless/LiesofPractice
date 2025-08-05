@@ -38,7 +38,7 @@ public static class Patterns
         3,
         7
     );
-    
+
     public static readonly Pattern ActivateAllTeleports = new(
         [0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, 0x83, 0x38, 0x00, 0x7F, 0xD7],
         "xxx????xxxxx",
@@ -47,17 +47,21 @@ public static class Patterns
         3,
         7
     );
-    
+
+    public static readonly Pattern DebugFlagsBaseA = new Pattern(
+        [0x44, 0x38, 0x25, 0x00, 0x00, 0x00, 0x00, 0x74, 0x58, 0x45],
+        "xxx????xxx",
+        0,
+        AddressingMode.Relative,
+        3,
+        7
+    );
 
 
     //Patch
 
 
-    
-
     //Hooks
-
-   
 
 
     //Funcs

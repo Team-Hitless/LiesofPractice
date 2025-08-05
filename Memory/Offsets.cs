@@ -21,13 +21,21 @@ public static class Offsets
 
     }
 
-    public static class EventFlagMan
+    public static class DebugFlagsBaseA
     {
         public static IntPtr Base;
-        public const int CoiledSword = 0x5A0F;
-        public const byte CoiledSwordBitFlag = 1 << 2;
-        public const int Firelink = 0x5A03;
-        public const byte FirelinkBitFlag = 1 << 7;
+
+        public enum Flags
+        {
+            InfiniteHealth = 0x0,
+            InfiniteFable = 0x1,
+            InfiniteStamFable = 0x2, //TODO check if this affects anything else
+            OneShot = 0x4,
+            EnableAi = 0x5, //Set to 1 by default, set to 0 to disable AI
+            ChrNoDeath = 0x6,
+            UnknownFlag = 0x7, //Setting this to 1 when ChrNoDeath is enabled still kills the player, test more to find out what it does
+        }
+ 
     }
 
     public static class GameDataMan
