@@ -4,6 +4,7 @@ using LiesOfPractice.Services;
 using LiesOfPractice.Viewmodels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Windows;
@@ -22,14 +23,14 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
-        services.AddSingleton<IWindowService, WindowService>();
-        services.AddSingleton<IGitHubService, GitHubService>();
-        services.AddSingleton<IGameLaunchService, GameLaunchService>();
-        services.AddSingleton<IJsonService, JsonService>();
+        services.AddScoped<IWindowService, WindowService>();
+        services.AddScoped<IGitHubService, GitHubService>();
+        services.AddScoped<IGameLaunchService, GameLaunchService>();
+        services.AddScoped<IJsonService, JsonService>();
+        services.AddSingleton<IDataService, DataService>();
 
         services.AddSingleton<MainViewModel>();
-        services.AddSingleton<GitHubViewModel>();
-        services.AddSingleton<Settings>(x => new());
+        services.AddScoped<GitHubViewModel>();
 
         services.AddSingleton(sp => new MainWindow()
         {
@@ -41,18 +42,22 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        _serviceProvider.GetService<IGitHubService>()?.CheckGitHubNewerVersion();
-        _serviceProvider.GetService<IGameLaunchService>()?.InitGameExePath();
-        _serviceProvider.GetService<Settings>()?.Reload();
-        
+        var bgWorker = new BackgroundWorker
+        {
+            WorkerReportsProgress = true,
+            WorkerSupportsCancellation = true
+        };
+        bgWorker.DoWork += (s, arg) => _serviceProvider.GetService<IGitHubService>()?.CheckGitHubNewerVersion();
+        bgWorker.DoWork += (s, arg) => _serviceProvider.GetService<IGameLaunchService>()?.InitGameExePath();
+        bgWorker.RunWorkerAsync();
+
         var startForm = _serviceProvider.GetRequiredService<MainWindow>();
-        startForm.Show();
+        startForm.Show();        
         base.OnStartup(e);
     }
     protected override void OnExit(ExitEventArgs e)
     {
-        //var startForm = _serviceProvider.GetRequiredService<IDataService>();
-        //startForm.SaveConfigAsync();
+        _serviceProvider.GetRequiredService<IDataService>().SaveAppSettings();
         base.OnExit(e);
     }
     private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

@@ -10,56 +10,45 @@
         WindowStartupLocation="CenterScreen" 
         ResizeMode="NoResize" SizeToContent="Width" Height="150"
         ui:WindowHelper.UseModernWindowStyle="True">
-  <Window.Resources>
-    <Style TargetType="Border">
-      <Setter Property="CornerRadius" Value="5"/>
-    </Style>
-  </Window.Resources>
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition />
-      <RowDefinition Height="30"/>
-    </Grid.RowDefinitions>
-    <Rectangle Grid.ColumnSpan="2" Fill="#FF292929"/>
-    <TextBox Grid.Row="0"
+    <Window.Resources>
+        <Style TargetType="Border">
+            <Setter Property="CornerRadius" Value="5"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0"
              MaxWidth="400"
              Margin="5"
              TextWrapping="Wrap"
-             Background="#E5484848"
-             Foreground="White"
              ScrollViewer.CanContentScroll="True"
              IsReadOnly="True"
              Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}">
-      <TextBox.Resources>
-        <Style TargetType="Border">
-          <Setter Property="CornerRadius" Value="5"/>
-        </Style>
-      </TextBox.Resources>
-    </TextBox>
-    <Rectangle Grid.Row="1" Fill="Black"/>
-    <Button x:Name="btnOk" 
-            Content="OK"
-            Grid.Row="1" 
-            HorizontalAlignment="Left"
-            Margin="5"
-            Background="#E5484848"
-            Foreground="White"
-            Width="60" Height="27"
-            FontSize="12">
-      <b:Interaction.Triggers>
-        <b:EventTrigger EventName="Click">
-          <b:CallMethodAction MethodName="Close"
+            <TextBox.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </TextBox.Resources>
+        </TextBox>
+        <Button Content="OK" Grid.Row="1" HorizontalAlignment="Left" Margin="5"
+                Width="60" Height="27" FontSize="12">
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="Click">
+                    <b:CallMethodAction MethodName="Close"
                   TargetObject="{Binding RelativeSource={RelativeSource
                                          Mode=FindAncestor,
                                          AncestorType=Window}}" />
-        </b:EventTrigger>
-      </b:Interaction.Triggers>
-      <Button.Resources>
-        <Style TargetType="Border">
-          <Setter Property="CornerRadius" Value="5"/>
-        </Style>
-      </Button.Resources>
-    </Button>
-  </Grid>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+    </Grid>
 
 </Window>

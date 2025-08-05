@@ -39,8 +39,10 @@ public class WindowService : IWindowService
 
     public string OpenFolderWindow(string path = "")
     {
-        var dialog = new System.Windows.Forms.FolderBrowserDialog();
-        dialog.InitialDirectory = @"C:\";
+        var dialog = new System.Windows.Forms.FolderBrowserDialog
+        {
+            InitialDirectory = @"C:\"
+        };
 
         if (!string.IsNullOrEmpty(path) & Directory.Exists(path))
             dialog.InitialDirectory = path;
@@ -51,14 +53,31 @@ public class WindowService : IWindowService
 
         return string.Empty;
     }
+    public string OpenFileDialog(string title, string filter, string path = "")
+    {
+        if (!Directory.Exists(path))
+            path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-    public void OpenWindowDialog<T>(T viewModel, ViewModelBase parent)
+        var dialog = new System.Windows.Forms.OpenFileDialog
+        {
+            Title = title,
+            Filter = filter,
+            InitialDirectory = path,
+            Multiselect = false
+        };
+
+        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            return dialog.FileName;
+
+        return string.Empty;
+    }
+
+    public void OpenWindowDialog<T>(T viewModel, ViewModelBase? parent = null)
     {
         var window = GetView(viewModel);
         ArgumentNullException.ThrowIfNull(window, nameof(window));
         window.DataContext = viewModel;
         window.Owner = GetView(parent);
-        window.ShowDialog();
     }
 
     public void OpenWindow<T>(T viewModel)
@@ -70,6 +89,21 @@ public class WindowService : IWindowService
         window.Focus();
     }
 
+    public MessageBoxResult ShowNotifyBox(string title, string message)
+    {
+        var window = new NotifyBoxOkCancel();
+        var viewModel = new NotifyBoxOkCancelViewModel
+        {
+            Message = message,
+            Title = title
+        };
+
+        window.DataContext = viewModel;
+        window.ShowDialog();
+
+        return viewModel.Result;
+    }
+
     public void CloseWindow<T>(T viewModel)
     {
         var window = GetView(viewModel);
@@ -79,7 +113,7 @@ public class WindowService : IWindowService
     internal static Window? GetViewInstance<T>() where T : Window, new() => Application.Current.Windows.OfType<T>().FirstOrDefault();
     internal static Window? GetView<T>(T viewModel) => viewModel switch
     {
-        NotifyBoxYesNoViewModel => GetViewInstance<NotifyBoxYesNo>() ?? new NotifyBoxYesNo(),
+        NotifyBoxOkCancelViewModel => GetViewInstance<NotifyBoxOkCancel>() ?? new NotifyBoxOkCancel(),
         NotifyBoxViewModel => GetViewInstance<NotifyBox>() ?? new NotifyBox(),
         GitHubViewModel => GetViewInstance<GitHub>() ?? new GitHub(),
         MainViewModel => GetViewInstance<MainWindow>() ?? new MainWindow(),

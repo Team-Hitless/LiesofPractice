@@ -1,25 +1,23 @@
-﻿using LiesOfPractice.Interfaces;
+﻿using LiesOfPractice.Core;
+using System.Windows;
 using System.Windows.Input;
-using LiesOfPractice.Core;
 
 namespace LiesOfPractice.Viewmodels;
 
-public class NotifyBoxYesNoViewModel : ViewModelBase
+public class NotifyBoxOkCancelViewModel : ViewModelBase
 {
-    private readonly IWindowService _windowService;
     private string _message = string.Empty;
     private string _title = string.Empty;
 
-    public NotifyBoxYesNoViewModel(IWindowService windowService)
+    public NotifyBoxOkCancelViewModel()
     {
-        _windowService = windowService;
         OkResultCommand = new DelegateCommand(OkResult);
-        FocusCommand = new DelegateCommand(ResetResult);
+        LoadedCommand = new DelegateCommand(ResetResult);
     }
     public ICommand OkResultCommand { get; set; }
-    public ICommand FocusCommand { get; set; }
+    public ICommand LoadedCommand { get; set; }
 
-    public bool Result { get; private set; } = false;
+    public MessageBoxResult Result { get; private set; } = MessageBoxResult.Cancel;
     public string Title
     {
         get => _title;
@@ -42,11 +40,6 @@ public class NotifyBoxYesNoViewModel : ViewModelBase
             OnPropertyChanged(nameof(Message));
         }
     }
-    private void ResetResult(object obj) => Result = false;
-
-    private void OkResult(object obj)
-    {
-        Result = true;
-        _windowService.CloseWindow(this);
-    }
+    private void ResetResult(object obj) => Result = MessageBoxResult.Cancel;
+    private void OkResult(object obj) => Result = MessageBoxResult.OK;
 }

@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:local="clr-namespace:LiesOfPractice"
+        xmlns:vm="clr-namespace:LiesOfPractice.Viewmodels"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
         Title="Lies of Practice" 
         Height="650" Width="500" 
@@ -17,13 +19,46 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Margin="5" FontSize="12" Padding="5"
+        <StackPanel Orientation="Horizontal">
+            <Ellipse Width="10" Height="10" Margin="5" Fill="Green"
+                     VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Ellipse.Style>
+                    <Style TargetType="Ellipse">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AppSettings.Gamepath}" Value="">
+                                <Setter Property="Fill" Value="Red"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Ellipse.Style>
+            </Ellipse>
+            <TextBlock Margin="0,5,5,5" Padding="6" Text="Game found">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AppSettings.Gamepath}" Value="">
+                                <Setter Property="Text" Value="Game not found"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Button Margin="5" FontSize="12" Padding="5"
                 Content="Launchgame" Command="{Binding LaunchGameCommand}">
-            <Button.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="5"/>
-                </Style>
-            </Button.Resources>
-        </Button>
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button Margin="5" FontSize="12" Padding="5"
+                Content="Select Gamepath" Command="{Binding SelectGamepathCommand}">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

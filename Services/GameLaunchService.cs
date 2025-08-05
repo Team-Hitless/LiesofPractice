@@ -1,5 +1,4 @@
 ﻿using LiesOfPractice.Interfaces;
-using LiesOfPractice.Properties;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
@@ -8,17 +7,16 @@ using System.Windows;
 
 namespace LiesOfPractice.Services;
 
-public class GameLaunchService(Settings settings) : IGameLaunchService
+public class GameLaunchService(IDataService dataService, IWindowService windowService) : IGameLaunchService
 {
     public void LaunchGame()
     {
         try
         {
-            InitGameExePath();
-            if (settings.Gamepath == null)
+            if (string.IsNullOrEmpty(dataService.AppSettings.Gamepath))
                 return;
 
-            var process = new Process { StartInfo = new(settings.Gamepath) };
+            var process = new Process { StartInfo = new(dataService.AppSettings.Gamepath) };
             process.Start();
         }
         catch (Exception ex)
@@ -77,16 +75,15 @@ public class GameLaunchService(Settings settings) : IGameLaunchService
 
     public void InitGameExePath()
     {
-        var gameExePath = settings.Gamepath;
-
-        if (!string.IsNullOrEmpty(settings.Gamepath) && File.Exists(gameExePath))
+        if (!string.IsNullOrEmpty(dataService.AppSettings.Gamepath) && 
+            File.Exists(dataService.AppSettings.Gamepath))
             return;
 
-        settings.Gamepath = null;
+        dataService.AppSettings.Gamepath = string.Empty;
 
         try
         {
-            var steamPath = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Valve\Steam", "InstallPath", null) as string;
+            var steamPath = GetSteampath();
             if (string.IsNullOrEmpty(steamPath))
                 throw new FileNotFoundException("Steam installation path not found in registry.");
 
@@ -109,36 +106,10 @@ public class GameLaunchService(Settings settings) : IGameLaunchService
 
                 if (File.Exists(fullPath))
                 {
-                    settings.Gamepath = fullPath;
+                    dataService.AppSettings.Gamepath = fullPath;
                     return;
                 }
 
-            }
-
-            var msg = "Lies of P executable could not be found automatically.\r\n" +
-                      "Please select DarkSoulsIII.exe manually.\n\n" +
-                      "Note: Certain features will not work unless the correct executable is selected.";
-            MessageBoxResult result = MessageBox.Show(msg, "Executable Not Found", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-
-            while (result == MessageBoxResult.OK)
-            {
-                var openFileDialog = new OpenFileDialog
-                {
-                    Title = "Select Lies of P Executable",
-                    Filter = "Executable Files (*.exe)|*.exe",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
-                };
-
-                if (openFileDialog.ShowDialog() != true)
-                    return;
-
-                if (Path.GetFileName(openFileDialog.FileName).Equals("LOP.exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    settings.Gamepath = openFileDialog.FileName;
-                    break;
-                }
-
-                result = MessageBox.Show("Please select LOP.exe.", "Invalid File", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
             }
             return;
 
@@ -151,7 +122,47 @@ public class GameLaunchService(Settings settings) : IGameLaunchService
         }
         finally
         {
-            settings.Save();
+            dataService.SaveAppSettings();
+        }
+    }
+
+    private string GetSteampath()
+    {
+        if (string.IsNullOrEmpty(dataService.AppSettings.Steampath))
+            return Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Valve\Steam", "InstallPath", null) as string ?? "";
+        else
+            return dataService.AppSettings.Steampath;
+    }
+
+    public void SelectGamepath()
+    {
+        try
+        {
+            var result = MessageBoxResult.OK;
+
+            while (result == MessageBoxResult.OK)
+            {
+                var filename = windowService.OpenFileDialog("Select Lies of P Executable", "Executable Files (*.exe)|*.exe", GetSteampath());
+
+                if (Path.GetFileName(filename).Equals("LOP.exe", StringComparison.OrdinalIgnoreCase))
+                {
+                    dataService.AppSettings.Gamepath = filename;
+                    break;
+                }
+
+                result = windowService.ShowNotifyBox("Invalid File", "Please select LOP.exe.");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error finding Lies of P: {ex.Message}", "Game Not Found", MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+            return;
+        }
+        finally
+        {
+            dataService.SaveAppSettings();
         }
     }
 }
