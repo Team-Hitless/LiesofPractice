@@ -1,31 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using LiesOfPractice.Interfaces;
 
 namespace LiesOfPractice.Memory;
 
-public class HookManager
+public class HookManager(IMemoryIoService memoryIo)
 {
-    private readonly MemoryIo _memoryIo;
-    private readonly Dictionary<long, HookData> _hookRegistry = new Dictionary<long, HookData>();
+    private readonly Dictionary<long, HookData> _hookRegistry = [];
     
     private class HookData
     {
         public long OriginAddr { get; set; }
         public long CaveAddr { get; set; }
-        public byte[] OriginalBytes { get; set; }
+        public required byte[] OriginalBytes { get; set; }
     }
-    
-    public HookManager(MemoryIo memoryIo)
-    {
-        _memoryIo = memoryIo;
-    }
-
 
     public long InstallHook(long codeLoc, long origin, byte[] originalBytes)
     {
         byte[] hookBytes = GetHookBytes(originalBytes.Length, codeLoc, origin);
-        _memoryIo.WriteBytes((IntPtr) origin, hookBytes);
+        memoryIo.WriteBytes((IntPtr) origin, hookBytes);
         _hookRegistry[codeLoc] = new HookData
         {
             CaveAddr = codeLoc,
@@ -53,13 +44,13 @@ public class HookManager
 
     public void UninstallHook(long key)
     {
-        if (!_hookRegistry.TryGetValue(key, out HookData hookToUninstall))
+        if (!_hookRegistry.TryGetValue(key, out HookData? hookToUninstall))
         {
             return;
         }
         
-        IntPtr originAddrPtr = (IntPtr)hookToUninstall.OriginAddr;
-        _memoryIo.WriteBytes(originAddrPtr, hookToUninstall.OriginalBytes);
+        var originAddrPtr = (IntPtr)hookToUninstall.OriginAddr;
+        memoryIo.WriteBytes(originAddrPtr, hookToUninstall.OriginalBytes);
         _hookRegistry.Remove(key);
 
     }

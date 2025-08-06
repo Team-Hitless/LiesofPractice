@@ -23,20 +23,18 @@ public partial class App : Application
     public App()
     {
         var services = new ServiceCollection();
-        
-        services.AddSingleton<MemoryIo>();
+       
+        services.AddTransient<IWindowService, WindowService>();
+        services.AddTransient<IGitHubService, GitHubService>();
+        services.AddTransient<IGameLaunchService, GameLaunchService>();
+        services.AddTransient<IJsonService, JsonService>();
+        services.AddTransient<GitHubViewModel>();
+
+        services.AddSingleton<MainViewModel>();
         services.AddSingleton<AoBScanner>();
         services.AddSingleton<TempService>();
         services.AddSingleton<IDataService, DataService>();
-
-        services.AddScoped<IWindowService, WindowService>();
-        services.AddScoped<IGitHubService, GitHubService>();
-        services.AddScoped<IGameLaunchService, GameLaunchService>();
-        services.AddScoped<IJsonService, JsonService>();
-        
-
-        services.AddSingleton<MainViewModel>();
-        services.AddScoped<GitHubViewModel>();
+        services.AddSingleton<IMemoryIoService, MemoryIoService>();
 
         services.AddSingleton(sp => new MainWindow()
         {
@@ -55,6 +53,7 @@ public partial class App : Application
         };
         bgWorker.DoWork += (s, arg) => _serviceProvider.GetService<IGitHubService>()?.CheckGitHubNewerVersion();
         bgWorker.DoWork += (s, arg) => _serviceProvider.GetService<IGameLaunchService>()?.InitGameExePath();
+        bgWorker.DoWork += (s, arg) => _serviceProvider.GetService<IMemoryIoService>()?.StartAutoAttach();
         bgWorker.RunWorkerAsync();
 
         var startForm = _serviceProvider.GetRequiredService<MainWindow>();

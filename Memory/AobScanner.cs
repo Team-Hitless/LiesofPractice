@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LiesOfPractice.Interfaces;
 using System.IO;
 
 namespace LiesOfPractice.Memory;
 
-public class AoBScanner
+public class AoBScanner(IMemoryIoService memoryIo)
 {
-    private readonly MemoryIo _memoryIo;
-
-    public AoBScanner(MemoryIo memoryIo)
-    {
-        _memoryIo = memoryIo;
-    }
-
     public void Scan()
     {
         string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -90,13 +82,13 @@ public class AoBScanner
                     break;
                 case AddressingMode.Direct32:
                 {
-                    uint absoluteAddr = _memoryIo.ReadUInt32(IntPtr.Add(instructionAddress, pattern.OffsetLocation));
+                    uint absoluteAddr = memoryIo.ReadUInt32(IntPtr.Add(instructionAddress, pattern.OffsetLocation));
                     addresses[i] = (IntPtr)absoluteAddr;
                     break;
                 }
                 default:
                 {
-                    int offset = _memoryIo.ReadInt32(IntPtr.Add(instructionAddress, pattern.OffsetLocation));
+                    int offset = memoryIo.ReadInt32(IntPtr.Add(instructionAddress, pattern.OffsetLocation));
                     addresses[i] = IntPtr.Add(instructionAddress, offset + pattern.InstructionLength);
                     break;
                 }
@@ -111,7 +103,7 @@ public class AoBScanner
         const int chunkSize = 4096 * 16;
         byte[] buffer = new byte[chunkSize];
 
-        IntPtr currentAddress = _memoryIo.BaseAddress;
+        IntPtr currentAddress = memoryIo.BaseAddress;
         IntPtr endAddress = IntPtr.Add(currentAddress, 0x7538000);
 
         List<IntPtr> addresses = new List<IntPtr>();
@@ -124,7 +116,7 @@ public class AoBScanner
             if (bytesToRead < pattern.Length)
                 break;
 
-            buffer = _memoryIo.ReadBytes(currentAddress, bytesToRead);
+            buffer = memoryIo.ReadBytes(currentAddress, bytesToRead);
 
             for (int i = 0; i <= bytesToRead - pattern.Length; i++)
             {

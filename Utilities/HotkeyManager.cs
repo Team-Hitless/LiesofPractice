@@ -1,170 +1,174 @@
-﻿using System.Runtime.InteropServices;
-using H.Hooks;
+﻿using H.Hooks;
+using LiesOfPractice.Interfaces;
 using LiesOfPractice.Memory;
+using System.Runtime.InteropServices;
 
-namespace LiesOfPractice.Utilities
+namespace LiesOfPractice.Utilities;
+
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
+public class HotkeyManager
 {
-    public class HotkeyManager
+    [DllImport("user32.dll")]
+    private static extern nint GetForegroundWindow();
+
+    [DllImport("user32.dll")]
+    private static extern nint GetWindowThreadProcessId(nint hWnd, out uint lpdwProcessId);
+
+    private readonly IMemoryIoService _memoryIo;
+    private readonly LowLevelKeyboardHook? _keyboardHook;
+    private readonly Dictionary<string, Keys> _hotkeyMappings;
+
+    private readonly Dictionary<string, Action> _actions;
+
+
+    public HotkeyManager(IMemoryIoService memoryIo)
     {
-        [DllImport("user32.dll")]
-        private static extern nint GetForegroundWindow();
+        _memoryIo = memoryIo;
+        _hotkeyMappings = [];
+        _actions = [];
 
-        [DllImport("user32.dll")]
-        private static extern nint GetWindowThreadProcessId(nint hWnd, out uint lpdwProcessId);
-
-        private readonly MemoryIo _memoryIo;
-        private readonly LowLevelKeyboardHook _keyboardHook;
-        private readonly Dictionary<string, Keys> _hotkeyMappings;
-
-        private readonly Dictionary<string, Action> _actions;
-
-        public HotkeyManager(MemoryIo memoryIo)
+        _keyboardHook = new LowLevelKeyboardHook
         {
-            _memoryIo = memoryIo;
-            _hotkeyMappings = new Dictionary<string, Keys>();
-            _actions = new Dictionary<string, Action>();
+            HandleModifierKeys = true
+        };
 
-            _keyboardHook = new LowLevelKeyboardHook();
-            _keyboardHook.HandleModifierKeys = true;
+        _keyboardHook.Down += KeyboardHook_Down;
 
-            _keyboardHook.Down += KeyboardHook_Down;
+        LoadHotkeys();
 
-            LoadHotkeys();
+        if (SettingsManager.Default.EnableHotkeys) _keyboardHook.Start();
+    }
 
-            if (SettingsManager.Default.EnableHotkeys) _keyboardHook.Start();
+    public void Start()
+    {
+        _keyboardHook?.Start();
+    }
+
+    public void Stop()
+    {
+        _keyboardHook.Stop();
+    }
+
+    public void RegisterAction(string actionId, Action action)
+    {
+        _actions[actionId] = action;
+    }
+
+    private void KeyboardHook_Down(object sender, KeyboardEventArgs e)
+    {
+        if (!IsGameFocused())
+            return;
+        foreach (var mapping in _hotkeyMappings)
+        {
+            string actionId = mapping.Key;
+            Keys keys = mapping.Value;
+            if (!e.Keys.Are(keys.Values.ToArray())) continue;
+            if (_actions.TryGetValue(actionId, out var action))
+            {
+                action.Invoke();
+            }
+
+            break;
         }
+    }
 
-        public void Start()
-        {
-            _keyboardHook.Start();
-        }
+    private bool IsGameFocused()
+    {
+        if (_memoryIo.TargetProcess == null || _memoryIo.TargetProcess.Id == 0) return false;
 
-        public void Stop()
-        {
-            _keyboardHook.Stop();
-        }
+        nint foregroundWindow = GetForegroundWindow();
+        GetWindowThreadProcessId(foregroundWindow, out uint foregroundProcessId);
+        return foregroundProcessId == (uint)_memoryIo.TargetProcess.Id;
+    }
 
-        public void RegisterAction(string actionId, Action action)
-        {
-            _actions[actionId] = action;
-        }
+    public void SetHotkey(string actionId, Keys keys)
+    {
+        _hotkeyMappings[actionId] = keys;
+        SaveHotkeys();
+    }
 
-        private void KeyboardHook_Down(object sender, KeyboardEventArgs e)
+    public void ClearHotkey(string actionId)
+    {
+        _hotkeyMappings.Remove(actionId);
+        SaveHotkeys();
+    }
+
+    public Keys GetHotkey(string actionId)
+    {
+        return _hotkeyMappings.TryGetValue(actionId, out var keys) ? keys : null;
+    }
+
+    public string GetActionIdByKeys(Keys keys)
+    {
+        return _hotkeyMappings.FirstOrDefault(x => x.Value == keys).Key;
+    }
+
+
+    public void SaveHotkeys()
+    {
+        try
         {
-            if (!IsGameFocused())
-                return;
+            var mappingPairs = new List<string>();
+
             foreach (var mapping in _hotkeyMappings)
             {
-                string actionId = mapping.Key;
-                Keys keys = mapping.Value;
-                if (!e.Keys.Are(keys.Values.ToArray())) continue;
-                if (_actions.TryGetValue(actionId, out var action))
-                {
-                    action.Invoke();
-                }
-
-                break;
+                mappingPairs.Add($"{mapping.Key}={mapping.Value}");
             }
+
+            SettingsManager.Default.HotkeyActionIds = string.Join(";", mappingPairs);
+            SettingsManager.Default.Save();
         }
-
-        private bool IsGameFocused()
+        catch (Exception ex)
         {
-            if (_memoryIo.TargetProcess == null || _memoryIo.TargetProcess.Id == 0) return false;
-
-            nint foregroundWindow = GetForegroundWindow();
-            GetWindowThreadProcessId(foregroundWindow, out uint foregroundProcessId);
-            return foregroundProcessId == (uint)_memoryIo.TargetProcess.Id;
+            Console.WriteLine($"Error saving hotkeys: {ex.Message}");
         }
-
-        public void SetHotkey(string actionId, Keys keys)
+    }
+    public void LoadHotkeys()
+    {
+        try
         {
-            _hotkeyMappings[actionId] = keys;
-            SaveHotkeys();
-        }
+            _hotkeyMappings.Clear();
 
-        public void ClearHotkey(string actionId)
-        {
-            _hotkeyMappings.Remove(actionId);
-            SaveHotkeys();
-        }
+            string actionIdsString = SettingsManager.Default.HotkeyActionIds;
+            string hotkeyValuesString = SettingsManager.Default.HotkeyValues;
 
-        public Keys GetHotkey(string actionId)
-        {
-            return _hotkeyMappings.TryGetValue(actionId, out var keys) ? keys : null;
-        }
-
-        public string GetActionIdByKeys(Keys keys)
-        {
-            return _hotkeyMappings.FirstOrDefault(x => x.Value == keys).Key;
-        }
-
-
-        public void SaveHotkeys()
-        {
-            try
+            if (!string.IsNullOrEmpty(actionIdsString) && actionIdsString.Contains("="))
             {
-                var mappingPairs = new List<string>();
+                string[] pairs = actionIdsString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var mapping in _hotkeyMappings)
+                foreach (string pair in pairs)
                 {
-                    mappingPairs.Add($"{mapping.Key}={mapping.Value}");
-                }
-
-                SettingsManager.Default.HotkeyActionIds = string.Join(";", mappingPairs);
-                SettingsManager.Default.Save();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving hotkeys: {ex.Message}");
-            }
-        }
-        public void LoadHotkeys()
-        {
-            try
-            {
-                _hotkeyMappings.Clear();
-
-                string actionIdsString = SettingsManager.Default.HotkeyActionIds;
-                string hotkeyValuesString = SettingsManager.Default.HotkeyValues;
-
-                if (!string.IsNullOrEmpty(actionIdsString) && actionIdsString.Contains("="))
-                {
-                    string[] pairs = actionIdsString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    foreach (string pair in pairs)
+                    int separatorIndex = pair.IndexOf('=');
+                    if (separatorIndex > 0)
                     {
-                        int separatorIndex = pair.IndexOf('=');
-                        if (separatorIndex > 0)
-                        {
-                            string actionId = pair.Substring(0, separatorIndex);
-                            string keyValue = pair.Substring(separatorIndex + 1);
+                        string actionId = pair.Substring(0, separatorIndex);
+                        string keyValue = pair.Substring(separatorIndex + 1);
 
-                            if (!string.IsNullOrEmpty(keyValue))
-                            {
-                                _hotkeyMappings[actionId] = Keys.Parse(keyValue);
-                            }
-                        }
-                    }
-                }
-                else if (!string.IsNullOrEmpty(actionIdsString) && !string.IsNullOrEmpty(hotkeyValuesString))
-                {
-                    string[] actionIds = actionIdsString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                    string[] hotkeyStrings =
-                        hotkeyValuesString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (actionIds.Length == hotkeyStrings.Length)
-                    {
-                        for (int i = 0; i < actionIds.Length; i++)
+                        if (!string.IsNullOrEmpty(keyValue))
                         {
-                            _hotkeyMappings[actionIds[i]] = Keys.Parse(hotkeyStrings[i]);
+                            _hotkeyMappings[actionId] = Keys.Parse(keyValue);
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            else if (!string.IsNullOrEmpty(actionIdsString) && !string.IsNullOrEmpty(hotkeyValuesString))
             {
-                Console.WriteLine($"Error loading hotkeys: {ex.Message}");
+                string[] actionIds = actionIdsString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] hotkeyStrings =
+                    hotkeyValuesString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (actionIds.Length == hotkeyStrings.Length)
+                {
+                    for (int i = 0; i < actionIds.Length; i++)
+                    {
+                        _hotkeyMappings[actionIds[i]] = Keys.Parse(hotkeyStrings[i]);
+                    }
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading hotkeys: {ex.Message}");
         }
     }
 }

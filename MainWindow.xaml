@@ -16,34 +16,71 @@
         ui:WindowHelper.UseModernWindowStyle="True">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Ellipse Width="10" Height="10" Margin="5" Fill="Green"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                <Ellipse Width="10" Height="10" Margin="5,0"
                      VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Ellipse.Style>
-                    <Style TargetType="Ellipse">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding AppSettings.Gamepath}" Value="">
-                                <Setter Property="Fill" Value="Red"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Ellipse.Style>
-            </Ellipse>
-            <TextBlock Margin="0,5,5,5" Padding="6" Text="Game found">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding AppSettings.Gamepath}" Value="">
-                                <Setter Property="Text" Value="Game not found"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
-            <Button Margin="5" FontSize="12" Padding="5"
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="Green"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AppSettings.Gamepath}" Value="true">
+                                    <Setter Property="Fill" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock Padding="0" Height="17">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="Game found"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AppSettings.Gamepath}" Value="">
+                                    <Setter Property="Text" Value="Game not found"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                <Ellipse Width="10" Height="10" Margin="5,0"
+                     VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="Green"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAttached}" Value="false">
+                                    <Setter Property="Fill" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock Padding="0" Height="17">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="Attached"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAttached}" Value="false">
+                                    <Setter Property="Text" Value="Not Attached"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top">
+                <Button Margin="5" FontSize="12" Padding="5"
                 Content="Launchgame" Command="{Binding LaunchGameCommand}">
                 <Button.Resources>
                     <Style TargetType="{x:Type Border}">

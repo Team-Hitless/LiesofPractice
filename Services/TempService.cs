@@ -1,9 +1,10 @@
-﻿using LiesOfPractice.Memory;
+﻿using LiesOfPractice.Interfaces;
+using LiesOfPractice.Memory;
 using LiesOfPractice.Utilities;
 
 namespace LiesOfPractice.Services;
 
-public class TempService(MemoryIo memoryIo)
+public class TempService(IMemoryIoService memoryIo)
 {
     public void GiveErgo(int amount)
     {

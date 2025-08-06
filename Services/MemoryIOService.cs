@@ -1,37 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LiesOfPractice.Interfaces;
+using LiesOfPractice.Memory;
 using System.Diagnostics;
 using System.Text;
 
-namespace LiesOfPractice.Memory;
+namespace LiesOfPractice.Services;
 
-public class MemoryIo : IDisposable
+public class MemoryIoService : IDisposable, IMemoryIoService
 {
-    public Process? TargetProcess;
-    public IntPtr ProcessHandle = IntPtr.Zero;
-    public IntPtr BaseAddress;
-
     private const int ProcessVmRead = 0x0010;
     private const int ProcessVmWrite = 0x0020;
     private const int ProcessVmOperation = 0x0008;
-    public const int ProcessQueryInformation = 0x0400;
-
+    private const int ProcessQueryInformation = 0x0400;
     private const string ProcessName = "lop-win64-shipping";
+
     private bool _disposed;
-    public bool IsAttached;
-    
     private CancellationTokenSource? _cts;
 
-    //private Timer? _autoAttachTimer;
-    //public void StartAutoAttach()
-    //{
-    //    _autoAttachTimer = new Timer(4000);
-    //    _autoAttachTimer.Elapsed += (sender, e) => TryAttachToProcess();
-        
-    //    TryAttachToProcess();
+    #region Public Properties
+    public bool IsAttached { get; private set; }
+    public Process? TargetProcess { get; private set; }
+    public nint ProcessHandle { get; private set; } = nint.Zero;
+    public nint BaseAddress { get; private set; }
+    #endregion
 
-    //    _autoAttachTimer.Start();
-    //}
+    #region Public Methods
     public void StartAutoAttach()
     {
         _cts = new CancellationTokenSource();
@@ -40,67 +32,11 @@ public class MemoryIo : IDisposable
         TryAttachToProcess(); // immidiate first try
     }
 
-    private async Task RunAutoAttachLoop(CancellationToken token)
-    {
-        var timer = new PeriodicTimer(TimeSpan.FromSeconds(4));
-
-        try
-        {
-            while (await timer.WaitForNextTickAsync(token))
-            {
-                TryAttachToProcess();
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // Timer has stopped
-        }
-    }
-
     public void StopAutoAttach()
     {
         _cts?.Cancel();
     }
 
-    private void TryAttachToProcess()
-    {
-        if (ProcessHandle != IntPtr.Zero)
-        {
-            if (TargetProcess == null || TargetProcess.HasExited)
-            {
-                Kernel32.CloseHandle(ProcessHandle);
-                ProcessHandle = IntPtr.Zero;
-                TargetProcess = null;
-                IsAttached = false;
-            }
-            return; 
-        }
-
-        var processes = Process.GetProcessesByName(ProcessName);
-        if (processes.Length > 0 && !processes[0].HasExited)
-        {
-            TargetProcess = processes[0];
-            ProcessHandle = Kernel32.OpenProcess(
-                ProcessVmRead | ProcessVmWrite | ProcessVmOperation | ProcessQueryInformation,
-                false,
-                TargetProcess.Id);
-
-            if (ProcessHandle == IntPtr.Zero)
-            {
-                TargetProcess = null;
-                IsAttached = false;
-            }
-            else
-            {
-                if (TargetProcess.MainModule != null)
-                {
-                    BaseAddress = TargetProcess.MainModule.BaseAddress;
-                }
-                IsAttached = true;
-            }
-        }
-    }
-    
     public void Dispose()
     {
         if (!_disposed)
@@ -110,11 +46,11 @@ public class MemoryIo : IDisposable
                 _cts.Dispose();
                 _cts = null;
             }
-    
-            if (ProcessHandle != IntPtr.Zero)
+
+            if (ProcessHandle != nint.Zero)
             {
                 Kernel32.CloseHandle(ProcessHandle);
-                ProcessHandle = IntPtr.Zero;
+                ProcessHandle = nint.Zero;
                 TargetProcess = null;
                 IsAttached = false;
             }
@@ -122,20 +58,14 @@ public class MemoryIo : IDisposable
         }
         GC.SuppressFinalize(this);
     }
-
-    ~MemoryIo()
-    {
-        Dispose();
-    }
-
-    public bool ReadTest(IntPtr addr)
+    public bool ReadTest(nint addr)
     {
         var array = new byte[1];
         var lpNumberOfBytesRead = 1;
         return Kernel32.ReadProcessMemory(ProcessHandle, addr, array, 1, ref lpNumberOfBytesRead) && lpNumberOfBytesRead == 1;
     }
 
-    public void ReadTestFull(IntPtr addr)
+    public void ReadTestFull(nint addr)
     {
         Console.WriteLine($"Testing Address: 0x{addr.ToInt64():X}");
 
@@ -168,19 +98,19 @@ public class MemoryIo : IDisposable
         }
     }
 
-    public uint RunThread(IntPtr address, uint timeout = 0xFFFFFFFF)
+    public uint RunThread(nint address, uint timeout = 0xFFFFFFFF)
     {
-        IntPtr thread = Kernel32.CreateRemoteThread(ProcessHandle, IntPtr.Zero, 0, address, IntPtr.Zero, 0, IntPtr.Zero);
+        nint thread = Kernel32.CreateRemoteThread(ProcessHandle, nint.Zero, 0, address, nint.Zero, 0, nint.Zero);
         var ret = Kernel32.WaitForSingleObject(thread, timeout);
         Kernel32.CloseHandle(thread);
         return ret;
     }
-    
-    public bool RunThreadAndWaitForCompletion(IntPtr address, uint timeout = 0xFFFFFFFF)
+
+    public bool RunThreadAndWaitForCompletion(nint address, uint timeout = 0xFFFFFFFF)
     {
-        IntPtr thread = Kernel32.CreateRemoteThread(ProcessHandle, IntPtr.Zero, 0, address, IntPtr.Zero, 0, IntPtr.Zero);
-        
-        if (thread == IntPtr.Zero)
+        nint thread = Kernel32.CreateRemoteThread(ProcessHandle, nint.Zero, 0, address, nint.Zero, 0, nint.Zero);
+
+        if (thread == nint.Zero)
         {
             return false;
         }
@@ -193,61 +123,61 @@ public class MemoryIo : IDisposable
 
     public void AllocateAndExecute(byte[] shellcode)
     {
-        IntPtr allocatedMemory = Kernel32.VirtualAllocEx(ProcessHandle, IntPtr.Zero, (uint)shellcode.Length);
-        
-        if (allocatedMemory == IntPtr.Zero) return;
-        
+        nint allocatedMemory = Kernel32.VirtualAllocEx(ProcessHandle, nint.Zero, (uint)shellcode.Length);
+
+        if (allocatedMemory == nint.Zero) return;
+
         WriteBytes(allocatedMemory, shellcode);
         bool executionSuccess = RunThreadAndWaitForCompletion(allocatedMemory);
-        
+
         if (!executionSuccess) return;
-        
+
         Kernel32.VirtualFreeEx(ProcessHandle, allocatedMemory, 0, 0x8000);
     }
-    
-    public int ReadInt32(IntPtr addr)
+
+    public int ReadInt32(nint addr)
     {
         var bytes = ReadBytes(addr, 4);
         return BitConverter.ToInt32(bytes, 0);
     }
 
-    public long ReadInt64(IntPtr addr)
+    public long ReadInt64(nint addr)
     {
         var bytes = ReadBytes(addr, 8);
         return BitConverter.ToInt64(bytes, 0);
     }
 
-    public byte ReadUInt8(IntPtr addr)
+    public byte ReadUInt8(nint addr)
     {
         var bytes = ReadBytes(addr, 1);
         return bytes[0];
     }
 
-    public uint ReadUInt32(IntPtr addr)
+    public uint ReadUInt32(nint addr)
     {
         var bytes = ReadBytes(addr, 4);
         return BitConverter.ToUInt32(bytes, 0);
     }
 
-    public ulong ReadUInt64(IntPtr addr)
+    public ulong ReadUInt64(nint addr)
     {
         var bytes = ReadBytes(addr, 8);
         return BitConverter.ToUInt64(bytes, 0);
     }
 
-    public float ReadFloat(IntPtr addr)
+    public float ReadFloat(nint addr)
     {
         var bytes = ReadBytes(addr, 4);
         return BitConverter.ToSingle(bytes, 0);
     }
 
-    public double ReadDouble(IntPtr addr)
+    public double ReadDouble(nint addr)
     {
         var bytes = ReadBytes(addr, 8);
         return BitConverter.ToDouble(bytes, 0);
     }
 
-    public byte[] ReadBytes(IntPtr addr, int size)
+    public byte[] ReadBytes(nint addr, int size)
     {
         var array = new byte[size];
         var lpNumberOfBytesRead = 1;
@@ -255,7 +185,7 @@ public class MemoryIo : IDisposable
         return array;
     }
 
-    public string ReadString(IntPtr addr, int maxLength = 32)
+    public string ReadString(nint addr, int maxLength = 32)
     {
         var bytes = ReadBytes(addr, maxLength * 2);
 
@@ -271,44 +201,44 @@ public class MemoryIo : IDisposable
 
         if (stringLength == 0)
         {
-            stringLength = bytes.Length - (bytes.Length % 2);
+            stringLength = bytes.Length - bytes.Length % 2;
         }
 
         return Encoding.Unicode.GetString(bytes, 0, stringLength);
     }
 
-    public void WriteInt32(IntPtr addr, int val)
+    public void WriteInt32(nint addr, int val)
     {
         WriteBytes(addr, BitConverter.GetBytes(val));
     }
 
-    public void WriteFloat(IntPtr addr, float val)
-    {
-        WriteBytes(addr, BitConverter.GetBytes(val));
-    }
-    
-    public void WriteDouble(IntPtr addr, double val)
+    public void WriteFloat(nint addr, float val)
     {
         WriteBytes(addr, BitConverter.GetBytes(val));
     }
 
-    public void WriteUInt8(IntPtr addr, byte val)
+    public void WriteDouble(nint addr, double val)
+    {
+        WriteBytes(addr, BitConverter.GetBytes(val));
+    }
+
+    public void WriteUInt8(nint addr, byte val)
     {
         var bytes = new byte[] { val };
         WriteBytes(addr, bytes);
     }
 
-    public void WriteByte(IntPtr addr, int value)
+    public void WriteByte(nint addr, int value)
     {
         Kernel32.WriteProcessMemory(ProcessHandle, addr, new byte[] { (byte)value }, 1, 0);
     }
 
-    public void WriteBytes(IntPtr addr, byte[] val)
+    public void WriteBytes(nint addr, byte[] val)
     {
         Kernel32.WriteProcessMemory(ProcessHandle, addr, val, val.Length, 0);
     }
 
-    public void WriteString(IntPtr addr, string value, int maxLength = 32)
+    public void WriteString(nint addr, string value, int maxLength = 32)
     {
         var bytes = new byte[maxLength];
         var stringBytes = Encoding.Unicode.GetBytes(value);
@@ -316,26 +246,25 @@ public class MemoryIo : IDisposable
         WriteBytes(addr, bytes);
     }
 
-    
-    internal IntPtr FollowPointers(IntPtr baseAddress, int[] offsets, bool readFinalPtr)
+    public nint FollowPointers(nint baseAddress, int[] offsets, bool readFinalPtr)
     {
         ulong ptr = ReadUInt64(baseAddress);
-        
+
         for (int i = 0; i < offsets.Length - 1; i++)
         {
-            ptr = ReadUInt64((IntPtr)ptr + offsets[i]);
+            ptr = ReadUInt64((nint)ptr + offsets[i]);
         }
-        
-        IntPtr finalAddress = (IntPtr)ptr + offsets[offsets.Length - 1];
-        
-        if (readFinalPtr) 
-            return (IntPtr)ReadUInt64(finalAddress);
 
-        
+        nint finalAddress = (nint)ptr + offsets[offsets.Length - 1];
+
+        if (readFinalPtr)
+            return (nint)ReadUInt64(finalAddress);
+
+
         return finalAddress;
     }
 
-    public void SetBitValue(IntPtr addr, byte flagMask, bool setValue)
+    public void SetBitValue(nint addr, byte flagMask, bool setValue)
     {
         byte currentByte = ReadUInt8(addr);
         byte modifiedByte;
@@ -346,54 +275,123 @@ public class MemoryIo : IDisposable
             modifiedByte = (byte)(currentByte & ~flagMask);
         WriteUInt8(addr, modifiedByte);
     }
-    
-    public bool IsBitSet(IntPtr addr, byte flagMask)
+
+    public bool IsBitSet(nint addr, byte flagMask)
     {
         byte currentByte = ReadUInt8(addr);
-        
+
         return (currentByte & flagMask) != 0;
     }
-    
-    public void SetBit32(IntPtr addr, int bitPosition, bool setValue)
+
+    public void SetBit32(nint addr, int bitPosition, bool setValue)
     {
-        IntPtr wordAddr = IntPtr.Add(addr, (bitPosition / 32) * 4);
-        
+        nint wordAddr = nint.Add(addr, bitPosition / 32 * 4);
+
         int bitPos = bitPosition % 32;
-        
+
         uint currentValue = ReadUInt32(wordAddr);
-        
+
         uint bitMask = 1u << bitPos;
-        
-        uint newValue = setValue 
-            ? currentValue | bitMask 
+
+        uint newValue = setValue
+            ? currentValue | bitMask
             : currentValue & ~bitMask;
-        
+
         WriteInt32(wordAddr, (int)newValue);
     }
 
-    // public bool IsGameLoaded()
-    // {
-    //     return (IntPtr) ReadUInt64((IntPtr)ReadUInt64(Offsets.WorldChrMan.Base) + Offsets.WorldChrMan.PlayerIns)!= IntPtr.Zero;
-    // }
-    
     public void AllocCodeCave()
     {
-        IntPtr searchRangeStart = BaseAddress - 0x40000000;
-        IntPtr searchRangeEnd = BaseAddress - 0x30000;
+        nint searchRangeStart = BaseAddress - 0x40000000;
+        nint searchRangeEnd = BaseAddress - 0x30000;
         uint codeCaveSize = 0x2000;
-        IntPtr allocatedMemory;
-    
-        for (IntPtr addr = searchRangeEnd; addr.ToInt64() > searchRangeStart.ToInt64(); addr -= 0x10000)
+        nint allocatedMemory;
+
+        for (nint addr = searchRangeEnd; addr.ToInt64() > searchRangeStart.ToInt64(); addr -= 0x10000)
         {
             allocatedMemory = Kernel32.VirtualAllocEx(ProcessHandle, addr, codeCaveSize);
-    
-            if (allocatedMemory != IntPtr.Zero)
+
+            if (allocatedMemory != nint.Zero)
             {
                 CodeCaveOffsets.Base = allocatedMemory;
                 break;
             }
         }
     }
+    #endregion
+
+    #region Private Methods
+    private async Task RunAutoAttachLoop(CancellationToken token)
+    {
+        var timer = new PeriodicTimer(TimeSpan.FromSeconds(4));
+
+        try
+        {
+            while (await timer.WaitForNextTickAsync(token))
+            {
+                TryAttachToProcess();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Timer has stopped
+        }
+    }
+
+    private void TryAttachToProcess()
+    {
+        if (ProcessHandle != nint.Zero)
+        {
+            if (TargetProcess == null || TargetProcess.HasExited)
+            {
+                Kernel32.CloseHandle(ProcessHandle);
+                ProcessHandle = nint.Zero;
+                TargetProcess = null;
+                IsAttached = false;
+            }
+            return;
+        }
+
+        var processes = Process.GetProcessesByName(ProcessName);
+        if (processes.Length > 0 && !processes[0].HasExited)
+        {
+            TargetProcess = processes[0];
+            ProcessHandle = Kernel32.OpenProcess(
+                ProcessVmRead | ProcessVmWrite | ProcessVmOperation | ProcessQueryInformation,
+                false,
+                TargetProcess.Id);
+
+            if (ProcessHandle == nint.Zero)
+            {
+                TargetProcess = null;
+                IsAttached = false;
+            }
+            else
+            {
+                if (TargetProcess.MainModule != null)
+                {
+                    BaseAddress = TargetProcess.MainModule.BaseAddress;
+                }
+                IsAttached = true;
+            }
+        }
+    }
+
+    #endregion
+
+    ~MemoryIoService()
+    {
+        Dispose();
+    }
+
+
+
+    // public bool IsGameLoaded()
+    // {
+    //     return (IntPtr) ReadUInt64((IntPtr)ReadUInt64(Offsets.WorldChrMan.Base) + Offsets.WorldChrMan.PlayerIns)!= IntPtr.Zero;
+    // }
+
+
     //
     // public IntPtr GetModuleStart(IntPtr address)
     // {
