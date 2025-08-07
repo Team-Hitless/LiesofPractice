@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using LiesOfPractice.Memory;
 
 namespace LiesOfPractice.Viewmodels;
+
 public class MainViewModel : ViewModelBase
 {
     private readonly IGameLaunchService _gameLaunchService;
@@ -17,8 +18,10 @@ public class MainViewModel : ViewModelBase
     private readonly DispatcherTimer _gameTimer;
 
     private bool _hasScanned = false;
+    private bool _hasAllocatedMem;
 
-    public MainViewModel(IGameLaunchService gameLaunchService, IMemoryIoService memoryIo, AoBScanner aoBScanner, TempService tempService, IDataService dataService)
+    public MainViewModel(IGameLaunchService gameLaunchService, IMemoryIoService memoryIo, AoBScanner aoBScanner,
+        TempService tempService, IDataService dataService)
     {
         _gameLaunchService = gameLaunchService;
         _memoryIo = memoryIo;
@@ -35,15 +38,19 @@ public class MainViewModel : ViewModelBase
         };
         _gameTimer.Tick += Timer_Tick;
         _gameTimer.Start();
-
     }
+
     #region Commands
+
     public ICommand LaunchGameCommand { get; set; }
     public ICommand SelectGamepathCommand { get; set; }
+
     #endregion
 
     #region Public Properies
+
     private bool _isAttached;
+
     public bool IsAttached
     {
         get => _isAttached;
@@ -55,11 +62,13 @@ public class MainViewModel : ViewModelBase
             OnPropertyChanged(nameof(IsAttached));
         }
     }
+
     public AppSettings AppSettings
     {
         get => _dataService.AppSettings;
         set => _dataService.AppSettings = value;
     }
+
     #endregion
 
     #region Private Properies
@@ -67,9 +76,11 @@ public class MainViewModel : ViewModelBase
     #endregion
 
     #region Public Methods
+
     #endregion
 
     #region Private Methods
+
     private void LaunchGame(object? obj) => _gameLaunchService.LaunchGame();
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -83,10 +94,23 @@ public class MainViewModel : ViewModelBase
                 _hasScanned = true;
                 Console.WriteLine($"Base: 0x{_memoryIo.BaseAddress.ToInt64():X}");
             }
+
+            if (!_hasAllocatedMem)
+            {
+                _memoryIo.AllocCodeCave();
+                Console.WriteLine($"Code cave: 0x{CodeCaveOffsets.Base.ToInt64():X}");
+                _hasAllocatedMem = true;
+            }
         }
         else
+        {
             IsAttached = false;
+            _hasScanned = false;
+            _hasAllocatedMem = false;
+        }
     }
+
     private void SelectGamepath(object? obj) => _gameLaunchService.SelectGamepath();
+
     #endregion
 }

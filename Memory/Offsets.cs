@@ -38,29 +38,14 @@ public static class Offsets
  
     }
 
-    public static class GameDataMan
+    public static class PlayerPosEntity
     {
         public static IntPtr Base;
-        public const int PlayerGameData = 0x10;
 
-        public enum Stats
-        {
-            Vigor = 0x44,
-            Attunement = 0x48,
-            Endurance = 0x4C,
-            Strength = 0x50,
-            Dexterity = 0x54,
-            Intelligence = 0x58,
-            Faith = 0x5C,
-            Luck = 0x60,
-            Vitality = 0x6C,
-            SoulLevel = 0x70,
-            Souls = 0x74,
-            TotalSouls = 0x78
-        }
-
-        public const int NewGame = 0x78;
-        public const int InGameTime = 0xA4;
+        public const int Ptr1 = 0x140;
+        public const int Ptr2 = 0xC0;
+        public const int Ptr3 = 0xC0;
+        public const int PosX = 0x1C0;
     }
 
     public static class DebugFlags

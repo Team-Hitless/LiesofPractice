@@ -57,6 +57,15 @@ public static class Patterns
         7
     );
 
+    public static readonly Pattern PlayerPosEntity = new Pattern(
+        [0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, 0x48, 0x63, 0xCA],
+        "xxx????xxx",
+        0,
+        AddressingMode.Relative,
+        3,
+        7
+    );
+
 
     //Patch
 
