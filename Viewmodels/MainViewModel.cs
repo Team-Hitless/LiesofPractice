@@ -13,24 +13,29 @@ public class MainViewModel : ViewModelBase
     private readonly IGameLaunchService _gameLaunchService;
     private readonly IDataService _dataService;
     private readonly IMemoryIoService _memoryIo;
-    private readonly TempService _tempService;
     private readonly AoBScanner _aoBScanner;
     private readonly DispatcherTimer _gameTimer;
+    
+    private readonly PlayerViewModel _playerViewModel;
 
     private bool _hasScanned = false;
     private bool _hasAllocatedMem;
 
-    public MainViewModel(IGameLaunchService gameLaunchService, IMemoryIoService memoryIo, AoBScanner aoBScanner,
-        TempService tempService, IDataService dataService)
+    public MainViewModel(IGameLaunchService gameLaunchService, IMemoryIoService memoryIo, AoBScanner aoBScanner, 
+        IDataService dataService, PlayerViewModel playerViewModelModel)
     {
         _gameLaunchService = gameLaunchService;
         _memoryIo = memoryIo;
         _aoBScanner = aoBScanner;
-        _tempService = tempService;
 
         _dataService = dataService;
+
+        _playerViewModel = playerViewModelModel;
+        CurrentViewModel = _playerViewModel;
+        
         LaunchGameCommand = new DelegateCommand(LaunchGame);
         SelectGamepathCommand = new DelegateCommand(SelectGamepath);
+        ShowPlayerCommand = new DelegateCommand(ShowPlayer);
 
         _gameTimer = new DispatcherTimer
         {
@@ -44,6 +49,7 @@ public class MainViewModel : ViewModelBase
 
     public ICommand LaunchGameCommand { get; set; }
     public ICommand SelectGamepathCommand { get; set; }
+    public ICommand ShowPlayerCommand { get; set; }
 
     #endregion
 
@@ -61,6 +67,17 @@ public class MainViewModel : ViewModelBase
 
             OnPropertyChanged(nameof(IsAttached));
         }
+    }
+    
+    private object _currentViewModel;
+    public object CurrentViewModel 
+    { 
+        get => _currentViewModel; 
+        set 
+        { 
+            _currentViewModel = value; 
+            OnPropertyChanged(nameof(CurrentViewModel)); 
+        } 
     }
 
     public AppSettings AppSettings
@@ -80,7 +97,7 @@ public class MainViewModel : ViewModelBase
     #endregion
 
     #region Private Methods
-
+    private void ShowPlayer(object? obj) => CurrentViewModel = _playerViewModel;
     private void LaunchGame(object? obj) => _gameLaunchService.LaunchGame();
 
     private void Timer_Tick(object? sender, EventArgs e)

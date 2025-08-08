@@ -30,7 +30,7 @@ public enum AddressingMode
 
 public static class Patterns
 {
-    public static readonly Pattern GiveErgoEntity = new(
+    public static readonly Pattern PlayerBaseA = new(
         [0x48, 0x8D, 0x15, 0x00, 0x00, 0x00, 0x00, 0x44, 0x0F, 0xB6, 0xCF],
         "xxx????xxxx",
         0,
