@@ -30,7 +30,7 @@ public enum AddressingMode
 
 public static class Patterns
 {
-    public static readonly Pattern GiveErgoEntity = new(
+    public static readonly Pattern PlayerBaseA = new(
         [0x48, 0x8D, 0x15, 0x00, 0x00, 0x00, 0x00, 0x44, 0x0F, 0xB6, 0xCF],
         "xxx????xxxx",
         0,
@@ -50,6 +50,15 @@ public static class Patterns
 
     public static readonly Pattern DebugFlagsBaseA = new Pattern(
         [0x44, 0x38, 0x25, 0x00, 0x00, 0x00, 0x00, 0x74, 0x58, 0x45],
+        "xxx????xxx",
+        0,
+        AddressingMode.Relative,
+        3,
+        7
+    );
+
+    public static readonly Pattern PlayerPosEntity = new Pattern(
+        [0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, 0x48, 0x63, 0xCA],
         "xxx????xxx",
         0,
         AddressingMode.Relative,

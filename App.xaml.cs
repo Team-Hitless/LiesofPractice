@@ -31,10 +31,12 @@ public partial class App : Application
         services.AddTransient<GitHubViewModel>();
 
         services.AddSingleton<MainViewModel>();
+        services.AddSingleton<PlayerViewModel>();
         services.AddSingleton<AoBScanner>();
         services.AddSingleton<TempService>();
         services.AddSingleton<IDataService, DataService>();
         services.AddSingleton<IMemoryIoService, MemoryIoService>();
+        services.AddSingleton<IPlayerService, PlayerService>();
 
         services.AddSingleton(sp => new MainWindow()
         {
