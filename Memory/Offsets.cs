@@ -34,17 +34,7 @@ public static class Offsets
         }
  
     }
-
-    public static class PlayerPosEntity
-    {
-        public static IntPtr Base;
-
-        public const int Ptr1 = 0x140;
-        public const int Ptr2 = 0xC0;
-        public const int Ptr3 = 0xC0;
-        public const int PosX = 0x1C0;
-    }
-
+    
     public static class DebugFlags
     {
         public static IntPtr Base;
