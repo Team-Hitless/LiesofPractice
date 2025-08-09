@@ -23,7 +23,7 @@ public class AoBScanner(IMemoryIoService memoryIo)
         }
 
 
-        Offsets.GiveErgoEntity.Base = FindAddressByPattern(Patterns.GiveErgoEntity);
+        Offsets.PlayerBaseA.Base = FindAddressByPattern(Patterns.PlayerBaseA);
         Offsets.ActivateAllTeleports.Base = FindAddressByPattern(Patterns.ActivateAllTeleports);
         Offsets.DebugFlagsBaseA.Base = FindAddressByPattern(Patterns.DebugFlagsBaseA);
 
@@ -37,7 +37,7 @@ public class AoBScanner(IMemoryIoService memoryIo)
 
 
 #if DEBUG
-        Console.WriteLine($"GiveErgoEntity.Base: 0x{Offsets.GiveErgoEntity.Base.ToInt64():X}");
+        Console.WriteLine($"PlayerBaseA.Base: 0x{Offsets.PlayerBaseA.Base.ToInt64():X}");
         Console.WriteLine($"ActivateAllTeleports.Base: 0x{Offsets.ActivateAllTeleports.Base.ToInt64():X}");
         Console.WriteLine($"DebugFlagsBaseA.Base: 0x{Offsets.DebugFlagsBaseA.Base.ToInt64():X}");
        

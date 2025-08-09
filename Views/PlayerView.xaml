@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="LiesOfPractice.Views.PlayerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:LiesOfPractice.Viewmodels"
+             xmlns:local="clr-namespace:LiesOfPractice.Views"
+             xmlns:converters="clr-namespace:SilkySouls3.Converters"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:PlayerViewModel}"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.Resources>
+        <converters:BooleanAndConverter x:Key="BooleanAndConverter" />
+    </UserControl.Resources>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <Button Grid.Column="0" Content="Save Pos 1" 
+                    Command="{Binding SavePositionCommand}" 
+                    CommandParameter="0"
+                    Padding="10,5"
+                    IsEnabled="{Binding AreOptionsEnabled}" />
+            
+            <Button Grid.Column="2" Content="Restore Pos 1" 
+                    Command="{Binding RestorePositionCommand}" 
+                    CommandParameter="0"
+                    Padding="10,5">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                        <Binding Path="IsPos1Saved" />
+                        <Binding Path="AreOptionsEnabled" />
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+        </Grid>
+        
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <Button Grid.Column="0" Content="Save Pos 2" 
+                    Command="{Binding SavePositionCommand}" 
+                    CommandParameter="1"
+                    Padding="10,5"
+                    IsEnabled="{Binding AreOptionsEnabled}" />
+            
+            <Button Grid.Column="2" Content="Restore Pos 2" 
+                    Command="{Binding RestorePositionCommand}" 
+                    CommandParameter="1"
+                    Padding="10,5">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                        <Binding Path="IsPos2Saved" />
+                        <Binding Path="AreOptionsEnabled" />
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+   
+            <CheckBox Grid.Row="0" Grid.Column="0" Content="No Damage" IsChecked="{Binding IsNoDamageEnabled}" />
+            <CheckBox Grid.Row="0" Grid.Column="2" Content="No Death" IsChecked="{Binding IsNoDeathEnabled}" />
+            <CheckBox Grid.Row="0" Grid.Column="1" Content="Infinite Fable" IsChecked="{Binding IsInfiniteFableEnabled}" />
+            <CheckBox Grid.Row="1" Grid.Column="0" Content="One Shot" IsChecked="{Binding IsOneShotEnabled}" />
+        </Grid>
+    </Grid>
+</UserControl>

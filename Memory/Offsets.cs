@@ -4,15 +4,12 @@ namespace LiesOfPractice.Memory;
 
 public static class Offsets
 {
-    public static class GiveErgoEntity
+    public static class PlayerBaseA
     {
         public static IntPtr Base;
 
-        public enum ErgoEntity
-        {
-            Ptr1 = 0,
-            Ptr2 = 0x20
-        }
+        public static int[] GiveErgoOffsets = [0x0, 0x20];
+        public static int[] PlayerPosOffsets = [0x0, 0x20, 0xF0, 0x1C0];
     }
 
     public static class ActivateAllTeleports
@@ -27,7 +24,7 @@ public static class Offsets
 
         public enum Flags
         {
-            InfiniteHealth = 0x0,
+            NoDamage = 0x0,
             InfiniteFable = 0x1,
             InfiniteStamFable = 0x2, //TODO check if this affects anything else
             OneShot = 0x4,
@@ -37,32 +34,7 @@ public static class Offsets
         }
  
     }
-
-    public static class GameDataMan
-    {
-        public static IntPtr Base;
-        public const int PlayerGameData = 0x10;
-
-        public enum Stats
-        {
-            Vigor = 0x44,
-            Attunement = 0x48,
-            Endurance = 0x4C,
-            Strength = 0x50,
-            Dexterity = 0x54,
-            Intelligence = 0x58,
-            Faith = 0x5C,
-            Luck = 0x60,
-            Vitality = 0x6C,
-            SoulLevel = 0x70,
-            Souls = 0x74,
-            TotalSouls = 0x78
-        }
-
-        public const int NewGame = 0x78;
-        public const int InGameTime = 0xA4;
-    }
-
+    
     public static class DebugFlags
     {
         public static IntPtr Base;
