@@ -23,9 +23,12 @@ public class AoBScanner(IMemoryIoService memoryIo)
         }
 
 
-        Offsets.PlayerBaseA.Base = FindAddressByPattern(Patterns.PlayerBaseA);
+        Offsets.PlayerBase.Base = FindAddressByPattern(Patterns.PlayerBaseA);
         Offsets.ActivateAllTeleports.Base = FindAddressByPattern(Patterns.ActivateAllTeleports);
         Offsets.DebugFlagsBaseA.Base = FindAddressByPattern(Patterns.DebugFlagsBaseA);
+        Offsets.InfiniteConsumablesFlag.Base = FindAddressByPattern(Patterns.InfiniteGoodsFlag);
+        
+        TryPatternWithFallback("NoErgoLoss", Patterns.NoErgoLoss, addr => Offsets.Patches.NoErgoLoss = addr, saved);
 
         using (var writer = new StreamWriter(savePath))
         {
@@ -34,15 +37,23 @@ public class AoBScanner(IMemoryIoService memoryIo)
         }
 
         Offsets.Funcs.GiveErgo = FindAddressByPattern(Patterns.GiveErgo).ToInt64();
-
+        Offsets.Funcs.Rest = FindAddressByPattern(Patterns.Rest).ToInt64();
+        
+        
 
 #if DEBUG
-        Console.WriteLine($"PlayerBaseA.Base: 0x{Offsets.PlayerBaseA.Base.ToInt64():X}");
+        Console.WriteLine($"PlayerBaseA.Base: 0x{Offsets.PlayerBase.Base.ToInt64():X}");
         Console.WriteLine($"ActivateAllTeleports.Base: 0x{Offsets.ActivateAllTeleports.Base.ToInt64():X}");
         Console.WriteLine($"DebugFlagsBaseA.Base: 0x{Offsets.DebugFlagsBaseA.Base.ToInt64():X}");
+        Console.WriteLine($"InfiniteGoodsFlag.Base: 0x{Offsets.InfiniteConsumablesFlag.Base.ToInt64():X}");
        
         
         Console.WriteLine($"Funcs.GiveErgo: 0x{Offsets.Funcs.GiveErgo:X}");
+        Console.WriteLine($"Funcs.Rest: 0x{Offsets.Funcs.Rest:X}");
+        
+        
+        
+        Console.WriteLine($"Patches.NoErgoLoss: 0x{Offsets.Patches.NoErgoLoss.ToInt64():X}");
  
 #endif
     }

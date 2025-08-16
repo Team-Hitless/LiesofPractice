@@ -7,4 +7,7 @@ public interface IPlayerService
     void ToggleActivateAllTeleports(bool isEnabled);
     void SavePos(int index);
     void RestorePos(int index);
+    void ToggleInfiniteConsumables(bool isEnabled);
+    void ToggleNoErgoLossOnDeath(bool isEnabled);
+    void Rest();
 }

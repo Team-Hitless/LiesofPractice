@@ -4,15 +4,26 @@ namespace LiesOfPractice.Memory;
 
 public static class Offsets
 {
-    public static class PlayerBaseA
+    public static class PlayerBase
     {
         public static IntPtr Base;
 
-        public static int[] GiveErgoOffsets = [0x0, 0x20];
-        public static int[] PlayerPosOffsets = [0x0, 0x20, 0xF0, 0x1C0];
+        public static class Offsets
+        {
+            public const int PlayerEntityPtr = 0x0;
+            public const int PlayerEntity = 0x20;
+            
+            public static readonly int[] PlayerPosPtrChain = [PlayerEntityPtr, PlayerEntity, 0xF0, 0x1C0];
+        }
     }
 
     public static class ActivateAllTeleports
+    {
+        public static IntPtr Base;
+
+    }
+    
+    public static class InfiniteConsumablesFlag
     {
         public static IntPtr Base;
 
@@ -191,16 +202,8 @@ public static class Offsets
 
     public static class Patches
     {
-        public static IntPtr NoLogo;
-        public static IntPtr RepeatAct;
-        public static IntPtr GameSpeed;
-        public static IntPtr InfiniteDurability;
-        public static IntPtr PlayerSoundView;
-        public static IntPtr DebugFont;
-        public static IntPtr NoRoll;
-        public static IntPtr DbgDrawFlag;
-        public static IntPtr FreeCam;
-        public static IntPtr AccessFullShop;
+        public static IntPtr NoErgoLoss;
+   
     }
 
 
@@ -222,7 +225,7 @@ public static class Offsets
     public static class Funcs
     {
         public static long GiveErgo;
-        public static long ItemSpawn;
+        public static long Rest;
         public static long SetEvent;
         public static long Travel;
         public static long LevelUp;
