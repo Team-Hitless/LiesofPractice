@@ -18,6 +18,7 @@
             <RowDefinition Height="10" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
         <Grid Grid.Row="0">
@@ -75,6 +76,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -83,9 +85,29 @@
             </Grid.ColumnDefinitions>
    
             <CheckBox Grid.Row="0" Grid.Column="0" Content="No Damage" IsChecked="{Binding IsNoDamageEnabled}" />
-            <CheckBox Grid.Row="0" Grid.Column="2" Content="No Death" IsChecked="{Binding IsNoDeathEnabled}" />
-            <CheckBox Grid.Row="0" Grid.Column="1" Content="Infinite Fable" IsChecked="{Binding IsInfiniteFableEnabled}" />
-            <CheckBox Grid.Row="1" Grid.Column="0" Content="One Shot" IsChecked="{Binding IsOneShotEnabled}" />
+            <CheckBox Grid.Row="0" Grid.Column="1" Content="No Death" IsChecked="{Binding IsNoDeathEnabled}" />
+            <CheckBox Grid.Row="1" Grid.Column="0" Content="Infinite Fable" IsChecked="{Binding IsInfiniteFableEnabled}" />
+            <CheckBox Grid.Row="1" Grid.Column="1" Content="One Shot" IsChecked="{Binding IsOneShotEnabled}" />
+            <CheckBox Grid.Row="2" Grid.Column="0" Content="Infinite Consumables" IsChecked="{Binding IsInfiniteConsumablesEnabled}" />
+            <CheckBox Grid.Row="2" Grid.Column="1" Content="No Ergo Loss on Death" IsChecked="{Binding IsNoErgoLossEnabled}" />
+        </Grid>
+        
+        <Grid Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+   
+            <Button Grid.Row="0" Grid.Column="0" Content="Rest"     Command="{Binding RestCommand}"  />
+            <!-- <CheckBox Grid.Row="0" Grid.Column="2" Content="No Death" IsChecked="{Binding IsNoDeathEnabled}" /> -->
+            <!-- <CheckBox Grid.Row="0" Grid.Column="1" Content="Infinite Fable" IsChecked="{Binding IsInfiniteFableEnabled}" /> -->
+            <!-- <CheckBox Grid.Row="1" Grid.Column="0" Content="One Shot" IsChecked="{Binding IsOneShotEnabled}" /> -->
+            <!-- <CheckBox Grid.Row="1" Grid.Column="1" Content="Infinite Consumables" IsChecked="{Binding IsInfiniteConsumablesEnabled}" /> -->
         </Grid>
     </Grid>
 </UserControl>

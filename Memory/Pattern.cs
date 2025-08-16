@@ -57,17 +57,24 @@ public static class Patterns
         7
     );
 
-    public static readonly Pattern PlayerPosEntity = new Pattern(
-        [0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, 0x48, 0x63, 0xCA],
-        "xxx????xxx",
+    public static readonly Pattern InfiniteGoodsFlag = new Pattern(
+        new byte[] { 0x80, 0x3D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x0E, 0x45 },
+        "xx????xxxx",
         0,
         AddressingMode.Relative,
-        3,
+        2,
         7
     );
 
 
     //Patch
+
+    public static readonly Pattern NoErgoLoss = new Pattern(
+        [0x89, 0x99, 0xA4, 0x00, 0x00, 0x00, 0x4C],
+        "xxxxxxx",
+        0,
+        AddressingMode.Absolute
+    );
 
 
     //Hooks
@@ -80,5 +87,14 @@ public static class Patterns
         "xxx????xxxxx",
         0,
         AddressingMode.Absolute
+    );
+
+    public static readonly Pattern Rest = new Pattern(
+        [0xE8, 0x00, 0x00, 0x00, 0x00, 0x4C, 0x8B, 0x83, 0xD8, 0x08],
+        "x????xxxxx",
+        0,
+        AddressingMode.Relative,
+        1,
+        5
     );
 }
