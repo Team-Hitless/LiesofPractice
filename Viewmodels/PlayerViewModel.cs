@@ -14,6 +14,7 @@ public class PlayerViewModel : ViewModelBase
         _playerService = playerService;
         SavePositionCommand = new DelegateCommand(SavePosition);
         RestorePositionCommand = new DelegateCommand(RestorePosition);
+        RestCommand = new DelegateCommand(Rest);
 
         AreOptionsEnabled = true; // True for now, need to find a way to detect if player is in game
     }
@@ -22,6 +23,7 @@ public class PlayerViewModel : ViewModelBase
     
     public ICommand SavePositionCommand { get; set; }
     public ICommand RestorePositionCommand { get; set; }
+    public ICommand RestCommand { get; set; }
 
     #endregion
     
@@ -97,6 +99,30 @@ public class PlayerViewModel : ViewModelBase
         } 
     }
     
+    private bool _isInfiniteConsumablesEnabled;
+    public bool IsInfiniteConsumablesEnabled 
+    { 
+        get => _isInfiniteConsumablesEnabled;
+        set
+        {
+            _isInfiniteConsumablesEnabled = value;
+            OnPropertyChanged(nameof(IsInfiniteConsumablesEnabled));
+            _playerService.ToggleInfiniteConsumables(_isInfiniteConsumablesEnabled);
+        } 
+    }
+    
+    private bool _isNoErgoLossEnabled;
+    public bool IsNoErgoLossEnabled 
+    { 
+        get => _isNoErgoLossEnabled;
+        set
+        {
+            _isNoErgoLossEnabled = value;
+            OnPropertyChanged(nameof(IsNoErgoLossEnabled));
+            _playerService.ToggleNoErgoLossOnDeath(_isNoErgoLossEnabled);
+        } 
+    }
+    
     #endregion
     
     #region Private Methods
@@ -109,8 +135,10 @@ public class PlayerViewModel : ViewModelBase
         else IsPos2Saved = true;
     }
     private void RestorePosition(object parameter) => _playerService.RestorePos(Convert.ToInt32(parameter));
-        
 
-    
+    private void Rest(object? obj) => _playerService.Rest();
+
+
+
     #endregion
 }
