@@ -97,4 +97,35 @@ public static class Patterns
         1,
         5
     );
+
+    public static readonly Pattern GiveItem = new Pattern(
+        [0xE8, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8B, 0x5D, 0xF7, 0x44, 0x8B, 0xE8],
+        "x????xxxxxxx",
+        0,
+        AddressingMode.Relative,
+        1,
+        5
+    );
+
+    public static readonly Pattern GiveWeapon = new Pattern(
+        [0xE8, 0x00, 0x00, 0x00, 0x00, 0x84, 0xC0, 0x74, 0x03, 0x41, 0xFF, 0xC5, 0x49],
+        "x????xxxxxxxx",
+        0,
+        AddressingMode.Relative,
+        1,
+        5
+    );
+
+
+    public static readonly Pattern GetGiveItemEntity = new Pattern(
+        [
+            0xE8, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8B, 0x88, 0x88, 0x01, 0x00, 0x00, 0x48, 0x85, 0xC9, 0x0F, 0x84, 0x2E
+        ],
+        "x????xxxxxxxxxxxxx",
+        0,
+        AddressingMode.Relative,
+        1,
+        5
+    );
+    
 }

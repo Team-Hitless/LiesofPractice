@@ -105,6 +105,28 @@ namespace LiesOfPractice.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 48 83 ec 28             sub    rsp,0x28
+        ///48 b8 00 00 00 00 00    movabs rax,0x0
+        ///00 00 00
+        ///ff d0                   call   rax
+        ///48 8b 88 80 01 00 00    mov    rcx,QWORD PTR [rax+0x180]
+        ///48 ba 00 00 00 00 00    movabs rdx,0x0
+        ///00 00 00
+        ///49 b8 00 00 00 00 00    movabs r8,0x0
+        ///00 00 00
+        ///48 b8 00 00 00 00 00    movabs rax,0x0
+        ///00 00 00
+        ///ff d0                   call   rax
+        ///48 83 c4 28             add    rsp,0x28
+        ///c3                      ret.
+        /// </summary>
+        internal static string ItemSpawn {
+            get {
+                return ResourceManager.GetString("ItemSpawn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 48 b9 00 00 00 00 00    movabs rcx,0x0
         ///00 00 00
         ///48 b8 00 00 00 00 00    movabs rax,0x0
@@ -126,6 +148,29 @@ namespace LiesOfPractice.Properties {
         internal static string Throwables {
             get {
                 return ResourceManager.GetString("Throwables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 48 83 ec 28             sub    rsp,0x28
+        ///48 b8 00 00 00 00 00    movabs rax,0x0
+        ///00 00 00
+        ///ff d0                   call   rax
+        ///48 8b 88 80 01 00 00    mov    rcx,QWORD PTR [rax+0x180]
+        ///48 ba 00 00 00 00 00    movabs rdx,0x0
+        ///00 00 00
+        ///49 b8 00 00 00 00 00    movabs r8,0x0
+        ///00 00 00
+        ///49 c7 c1 00 00 00 00    mov    r9,0x0
+        ///48 b8 00 00 00 00 00    movabs rax,0x0
+        ///00 00 00
+        ///ff d0                   call   rax
+        ///48 83 c4 28             add    rsp,0x28
+        ///c3                      ret.
+        /// </summary>
+        internal static string WeaponSpawn {
+            get {
+                return ResourceManager.GetString("WeaponSpawn", resourceCulture);
             }
         }
         
