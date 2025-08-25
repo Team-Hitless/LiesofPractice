@@ -38,6 +38,9 @@ public class AoBScanner(IMemoryIoService memoryIo)
 
         Offsets.Funcs.GiveErgo = FindAddressByPattern(Patterns.GiveErgo).ToInt64();
         Offsets.Funcs.Rest = FindAddressByPattern(Patterns.Rest).ToInt64();
+        Offsets.Funcs.GetGiveItemEntity = FindAddressByPattern(Patterns.GetGiveItemEntity).ToInt64();
+        Offsets.Funcs.GiveItem = FindAddressByPattern(Patterns.GiveItem).ToInt64();
+        Offsets.Funcs.GiveWeapon = FindAddressByPattern(Patterns.GiveWeapon).ToInt64();
         
         
 
@@ -50,6 +53,9 @@ public class AoBScanner(IMemoryIoService memoryIo)
         
         Console.WriteLine($"Funcs.GiveErgo: 0x{Offsets.Funcs.GiveErgo:X}");
         Console.WriteLine($"Funcs.Rest: 0x{Offsets.Funcs.Rest:X}");
+        Console.WriteLine($"Funcs.GetGiveItemEntity: 0x{Offsets.Funcs.GetGiveItemEntity:X}");
+        Console.WriteLine($"Funcs.GiveItem: 0x{Offsets.Funcs.GiveItem:X}");
+        Console.WriteLine($"Funcs.GiveWeapon: 0x{Offsets.Funcs.GiveWeapon:X}");
         
         
         

@@ -37,6 +37,7 @@ public partial class App : Application
         services.AddSingleton<IDataService, DataService>();
         services.AddSingleton<IMemoryIoService, MemoryIoService>();
         services.AddSingleton<IPlayerService, PlayerService>();
+        services.AddSingleton<IItemService, ItemService>();
 
         services.AddSingleton(sp => new MainWindow()
         {

@@ -226,9 +226,9 @@ public static class Offsets
     {
         public static long GiveErgo;
         public static long Rest;
-        public static long SetEvent;
-        public static long Travel;
-        public static long LevelUp;
+        public static long GetGiveItemEntity;
+        public static long GiveItem;
+        public static long GiveWeapon;
         public static long ReinforceWeapon;
         public static long InfuseWeapon;
         public static long Repair;
