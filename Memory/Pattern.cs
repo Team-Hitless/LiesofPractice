@@ -1,24 +1,14 @@
 ﻿namespace LiesOfPractice.Memory;
 
-public class Pattern
+public class Pattern(byte[] bytes, string mask, int instructionOffset, AddressingMode addressingMode,
+    int offsetLocation = 0, int instructionLength = 0)
 {
-    public byte[] Bytes { get; }
-    public string Mask { get; }
-    public int InstructionOffset { get; }
-    public AddressingMode AddressingMode { get; }
-    public int OffsetLocation { get; }
-    public int InstructionLength { get; }
-
-    public Pattern(byte[] bytes, string mask, int instructionOffset, AddressingMode addressingMode,
-        int offsetLocation = 0, int instructionLength = 0)
-    {
-        Bytes = bytes;
-        Mask = mask;
-        InstructionOffset = instructionOffset;
-        AddressingMode = addressingMode;
-        OffsetLocation = offsetLocation;
-        InstructionLength = instructionLength;
-    }
+    public byte[] Bytes { get; } = bytes;
+    public string Mask { get; } = mask;
+    public int InstructionOffset { get; } = instructionOffset;
+    public AddressingMode AddressingMode { get; } = addressingMode;
+    public int OffsetLocation { get; } = offsetLocation;
+    public int InstructionLength { get; } = instructionLength;
 }
 
 public enum AddressingMode
@@ -57,8 +47,8 @@ public static class Patterns
         7
     );
 
-    public static readonly Pattern InfiniteGoodsFlag = new Pattern(
-        new byte[] { 0x80, 0x3D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x0E, 0x45 },
+    public static readonly Pattern InfiniteGoodsFlag = new(
+        [0x80, 0x3D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x0E, 0x45],
         "xx????xxxx",
         0,
         AddressingMode.Relative,

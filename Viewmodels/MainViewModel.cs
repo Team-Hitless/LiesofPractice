@@ -1,41 +1,36 @@
 ﻿using LiesOfPractice.Core;
 using LiesOfPractice.Interfaces;
 using LiesOfPractice.Models;
-using LiesOfPractice.Services;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LiesOfPractice.Memory;
+using System.Collections.ObjectModel;
 
 namespace LiesOfPractice.Viewmodels;
 
 public class MainViewModel : ViewModelBase
 {
     private readonly IGameLaunchService _gameLaunchService;
+    private readonly INavigationService _navigationService;
     private readonly IDataService _dataService;
     private readonly IMemoryIoService _memoryIo;
     private readonly AoBScanner _aoBScanner;
     private readonly DispatcherTimer _gameTimer;
-    
-    private readonly PlayerViewModel _playerViewModel;
 
     private bool _hasScanned = false;
     private bool _hasAllocatedMem;
 
-    public MainViewModel(IGameLaunchService gameLaunchService, IMemoryIoService memoryIo, AoBScanner aoBScanner, 
-        IDataService dataService, PlayerViewModel playerViewModelModel)
+    public MainViewModel(IGameLaunchService gameLaunchService, INavigationService navigationService, IMemoryIoService memoryIo, IDataService dataService, AoBScanner aoBScanner)
     {
         _gameLaunchService = gameLaunchService;
+        _navigationService = navigationService;
         _memoryIo = memoryIo;
         _aoBScanner = aoBScanner;
 
         _dataService = dataService;
-
-        _playerViewModel = playerViewModelModel;
-        CurrentViewModel = _playerViewModel;
         
         LaunchGameCommand = new DelegateCommand(LaunchGame);
         SelectGamepathCommand = new DelegateCommand(SelectGamepath);
-        ShowPlayerCommand = new DelegateCommand(ShowPlayer);
 
         _gameTimer = new DispatcherTimer
         {
@@ -49,7 +44,6 @@ public class MainViewModel : ViewModelBase
 
     public ICommand LaunchGameCommand { get; set; }
     public ICommand SelectGamepathCommand { get; set; }
-    public ICommand ShowPlayerCommand { get; set; }
 
     #endregion
 
@@ -68,22 +62,29 @@ public class MainViewModel : ViewModelBase
             OnPropertyChanged(nameof(IsAttached));
         }
     }
-    
-    private object _currentViewModel;
-    public object CurrentViewModel 
-    { 
-        get => _currentViewModel; 
-        set 
-        { 
-            _currentViewModel = value; 
-            OnPropertyChanged(nameof(CurrentViewModel)); 
-        } 
-    }
 
     public AppSettings AppSettings
     {
         get => _dataService.AppSettings;
         set => _dataService.AppSettings = value;
+    }
+
+    public ObservableCollection<Page> Pages
+    {
+        get => _dataService.Pages;
+        set => _dataService.Pages = value;
+    }
+
+    public Page? SelectedPage
+    {
+        get => _dataService.SelectedPage;
+        set => _dataService.SelectedPage = value;
+    }
+
+    public ViewModelBase CurrentView
+    {
+        get => _navigationService.CurrentView;
+        set => _navigationService.CurrentView = value;
     }
 
     #endregion
@@ -97,7 +98,6 @@ public class MainViewModel : ViewModelBase
     #endregion
 
     #region Private Methods
-    private void ShowPlayer(object? obj) => CurrentViewModel = _playerViewModel;
     private void LaunchGame(object? obj) => _gameLaunchService.LaunchGame();
 
     private void Timer_Tick(object? sender, EventArgs e)

@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterScreen"
         ui:ThemeManager.IsThemeAware="True"
         ui:WindowHelper.UseModernWindowStyle="True">
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> 
             <RowDefinition Height="*"/>    
@@ -24,15 +24,15 @@
             <ColumnDefinition Width="*"/>  
         </Grid.ColumnDefinitions>
         
-        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            
-            <StackPanel Grid.Column="0">
+
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-                    <Ellipse Width="10" Height="10" Margin="5,0"
+                    <Ellipse Width="10" Height="10" Margin="0,0,5,0"
                          VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Ellipse.Style>
                             <Style TargetType="Ellipse">
@@ -59,7 +59,7 @@
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-                    <Ellipse Width="10" Height="10" Margin="5,0"
+                    <Ellipse Width="10" Height="10" Margin="0,0,5,0"
                          VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Ellipse.Style>
                             <Style TargetType="Ellipse">
@@ -86,34 +86,22 @@
                     </TextBlock>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Top">
-                <Button Margin="5" FontSize="12" Padding="5"
-                        Content="Launchgame" Command="{Binding LaunchGameCommand}">
-                    <Button.Resources>
-                        <Style TargetType="{x:Type Border}">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-                <Button Margin="5" FontSize="12" Padding="5"
-                        Content="Select Gamepath" Command="{Binding SelectGamepathCommand}">
-                    <Button.Resources>
-                        <Style TargetType="{x:Type Border}">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
+                <Button Margin="5,0,0,0" Content="Launchgame" Command="{Binding LaunchGameCommand}"/>
+                <Button Margin="5,0,0,0" Content="Select Gamepath" Command="{Binding SelectGamepathCommand}"/>
             </StackPanel>
         </Grid>
-        
-        <StackPanel Grid.Row="1" Grid.Column="0">
-            <Button Content="Player" Margin="5" Padding="10" 
-                    Command="{Binding ShowPlayerCommand}"/>
-      
-        </StackPanel>
-        
-        <ContentControl Grid.Row="1" Grid.Column="1" 
-                        Content="{Binding CurrentViewModel}"
-                        Margin="10"/>
+        <ListView ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage, Mode=TwoWay}"
+                  Grid.Column="0" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" Padding="5,6"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <ui:ScrollViewerEx Grid.Column="1" Grid.Row="1">
+            <ContentControl Content="{Binding CurrentView}" IsTabStop="False"
+                            FocusVisualStyle="{x:Null}"/>
+        </ui:ScrollViewerEx>
     </Grid>
 </Window>

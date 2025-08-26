@@ -28,16 +28,23 @@ public partial class App : Application
         services.AddTransient<IGitHubService, GitHubService>();
         services.AddTransient<IGameLaunchService, GameLaunchService>();
         services.AddTransient<IJsonService, JsonService>();
+        
+        services.AddSingleton<IDataService, DataService>();
+        services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IMemoryIoService, MemoryIoService>();
+        services.AddSingleton<IPlayerService, PlayerService>();
+        services.AddSingleton<IItemService, ItemService>();
+
         services.AddTransient<GitHubViewModel>();
 
+        services.AddSingleton<Func<Type, ViewModelBase>>(sp => type =>
+        {
+            return (ViewModelBase)sp.GetRequiredService(type);
+        });
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<PlayerViewModel>();
         services.AddSingleton<AoBScanner>();
         services.AddSingleton<TempService>();
-        services.AddSingleton<IDataService, DataService>();
-        services.AddSingleton<IMemoryIoService, MemoryIoService>();
-        services.AddSingleton<IPlayerService, PlayerService>();
-        services.AddSingleton<IItemService, ItemService>();
 
         services.AddSingleton(sp => new MainWindow()
         {
