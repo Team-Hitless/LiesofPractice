@@ -1,0 +1,557 @@
+﻿<UserControl x:Class="LiesOfPractice.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"      
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:e="clr-namespace:LiesOfPractice.Enums"
+             xmlns:vm="clr-namespace:LiesOfPractice.Viewmodels"
+             xmlns:c="clr-namespace:LiesOfPractice.Controls"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Options" FontWeight="Bold" Margin="0,0,0,10" FontSize="20"/>
+        <CheckBox Grid.Row="1" Content="Enable Hotkeys" HorizontalAlignment="Left"
+                  IsChecked="{Binding GlobalHotkeys}"/>
+        <CheckBox Grid.Row="1" Content="Check for Updates" HorizontalAlignment="Center"
+                  IsChecked="{Binding CheckforUpdates}"/>
+        <CheckBox Grid.Row="1" Content="Always On Top" HorizontalAlignment="Right"
+                  IsChecked="{Binding StaysOnTop}"/>
+        <StackPanel Grid.Row="2" >
+            <Separator Margin="0,0,0,10" />
+            <TextBlock Text="Hotkey Bindings" FontWeight="Bold" FontSize="15"/>
+            <TabControl Margin="0,5,0,0">
+                <TabItem Header="Player">
+                    <ScrollViewer MaxHeight="370" VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="5,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="95" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="95" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Duelist Setup:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1"  Grid.Row="0" Text="{Binding DuelistSetup}" Tag="{x:Static e:ActionTag.DuelistSetup}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="0" Text="No Death:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="0" Text="{Binding NoDeath}" Tag="{x:Static e:ActionTag.NoDeath}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="One Shot:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="1" Text="{Binding OneShot}" Tag="{x:Static e:ActionTag.OneShot}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="1" Text="No Damage:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="1" Text="{Binding NoDamage}" Tag="{x:Static e:ActionTag.NoDamage}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Save Pos 1:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="2" Text="{Binding SavePos1}" Tag="{x:Static e:ActionTag.SavePos1}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="2" Text="Restore Pos 1:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="2" Text="{Binding RestorePos1}" Tag="{x:Static e:ActionTag.RestorePos1}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Save Pos 2:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="3" Text="{Binding SavePos2}" Tag="{x:Static e:ActionTag.SavePos2}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="3" Text="Restore Pos 2:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="3" Text="{Binding RestorePos2}" Tag="{x:Static e:ActionTag.RestorePos2}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Infinite Consumables:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="4" Text="{Binding InfiniteConsumables}" Tag="{x:Static e:ActionTag.InfiniteConsumables}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="4" Text="Infinite Fable:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="4" Text="{Binding InfiniteFable}" Tag="{x:Static e:ActionTag.InfiniteFable}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="5" Text="No Ergo Loss On Death:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="5" Text="{Binding NoErgoLossOnDeath}" Tag="{x:Static e:ActionTag.NoErgoLossOnDeath}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="5" Text="No Puls Cell Charge:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="5" Text="{Binding NoPulsCellCharge}" Tag="{x:Static e:ActionTag.NoPulsCellCharge}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="Utility">
+                    <ScrollViewer MaxHeight="370" VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="5,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="95" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="95" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="No Clip:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="0" Text="{Binding NoClip}" Tag="{x:Static e:ActionTag.NoClip}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="0" Text="Quitout:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="0" Text="{Binding Quitout}" Tag="{x:Static e:ActionTag.Quitout}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Increase Game Speed:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="1" Text="{Binding IncreaseGameSpeed}" Tag="{x:Static e:ActionTag.IncreaseGameSpeed}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="1" Text="Decrease Game Speed:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="1" Text="{Binding DecreaseGameSpeed}" Tag="{x:Static e:ActionTag.DecreaseGameSpeed}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Increase NoClip Speed:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="2" Text="{Binding IncreaseNoClipSpeed}" Tag="{x:Static e:ActionTag.IncreaseNoClipSpeed}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="2" Text="Decrease NoClip Speed:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="2" Text="{Binding DecreaseNoClipSpeed}" Tag="{x:Static e:ActionTag.DecreaseNoClipSpeed}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Enable Free Cam:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="3" Text="{Binding EnableFreeCam}" Tag="{x:Static e:ActionTag.EnableFreeCam}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="3" Text="Cam to Player:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="3" Text="{Binding CamToPlayer}" Tag="{x:Static e:ActionTag.CamToPlayer}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Death Cam:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="4" Text="{Binding DeathCam}" Tag="{x:Static e:ActionTag.DeathCam}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="Enemies">
+                    <ScrollViewer MaxHeight="370" VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="5,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="95" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="95" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="35"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="All No Damage:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="0" Text="{Binding AllNoDamage}" Tag="{x:Static e:ActionTag.AllNoDamage}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="0" Text="Disable All AI:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="0" Text="{Binding DisableAllAi}" Tag="{x:Static e:ActionTag.DisableAllAi}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="All No Death:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="1" Text="{Binding AllNoDeath}" Tag="{x:Static e:ActionTag.AllNoDeath}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="1" Text="All Repeat Action:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="1" Text="{Binding AllRepeatAction}" Tag="{x:Static e:ActionTag.AllRepeatAction}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Enable Target Options:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="2" Text="{Binding EnableTargetOptions}" Tag="{x:Static e:ActionTag.EnableTargetOptions}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="2" Text="Freeze HP:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4"  Grid.Row="2" Text="{Binding FreezeHP}" Tag="{x:Static e:ActionTag.FreezeHP}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Target Repeat Action:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="3" Text="{Binding TargetRepeatAction}" Tag="{x:Static e:ActionTag.TargetRepeatAction}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="3" Text="Disable Target AI:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4"  Grid.Row="3" Text="{Binding DisableTargetAi}" Tag="{x:Static e:ActionTag.DisableTargetAi}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Increase Target Speed:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="4" Text="{Binding IncreaseTargetSpeed}" Tag="{x:Static e:ActionTag.IncreaseTargetSpeed}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="4" Text="Decrease Target Speed:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="4" Text="{Binding DecreaseTargetSpeed}" Tag="{x:Static e:ActionTag.DecreaseTargetSpeed}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="5" Text="Show Target Resist:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="5" Text="{Binding ShowTargetResist}" Tag="{x:Static e:ActionTag.ShowTargetResist}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="5" Text="Kill Target:" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="5" Text="{Binding KillTarget}" Tag="{x:Static e:ActionTag.KillTarget}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="0" Grid.Row="6" Text="Show Target's View" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="1" Grid.Row="6" Text="{Binding ShowTargetsView}" Tag="{x:Static e:ActionTag.ShowTargetsView}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+
+                            <TextBlock Grid.Column="3" Grid.Row="6" Text="Set target custom hp" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <c:HotkeyBox Grid.Column="4" Grid.Row="6" Text="{Binding SetTargetCustomHp}" Tag="{x:Static e:ActionTag.SetTargetCustomHp}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                               CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </c:HotkeyBox>
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+    </Grid>
+</UserControl>

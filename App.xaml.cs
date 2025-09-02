@@ -1,15 +1,12 @@
 ﻿using LiesOfPractice.Interfaces;
-using LiesOfPractice.Properties;
 using LiesOfPractice.Services;
 using LiesOfPractice.Viewmodels;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.ComponentModel;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 using System.Windows.Threading;
 using LiesOfPractice.Memory;
+
 
 namespace LiesOfPractice;
 
@@ -34,6 +31,7 @@ public partial class App : Application
         services.AddSingleton<IMemoryIoService, MemoryIoService>();
         services.AddSingleton<IPlayerService, PlayerService>();
         services.AddSingleton<IItemService, ItemService>();
+        services.AddSingleton<IHotkeyService, HotkeyService>();
 
         services.AddTransient<GitHubViewModel>();
 
@@ -43,6 +41,7 @@ public partial class App : Application
         });
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<PlayerViewModel>();
+        services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<AoBScanner>();
         services.AddSingleton<TempService>();
 

@@ -2,6 +2,6 @@
 
 public interface IJsonService
 {
-    public Task<T> DeserializeAsync<T>(string inputPath) where T : new();
-    public void SerializeAsync<T>(T obj, string outputPath);
+    public Task<T> DeserializeAsync<T>(string filepath) where T : new();
+    public void SerializeAsync<T>(T obj, string outputPath, string filepath);
 }

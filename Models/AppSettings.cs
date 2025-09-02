@@ -1,4 +1,6 @@
-﻿using LiesOfPractice.Core;
+﻿using H.Hooks;
+using LiesOfPractice.Core;
+using System.Globalization;
 
 namespace LiesOfPractice.Models;
 
@@ -6,16 +8,15 @@ public class AppSettings : OberservableObject
 {
     private string _gamepath = "";
     private string _steampath = "";
-    private bool _checkForUpdates;
+    private bool _checkForUpdates = true;
+    private bool _staysOnTop;
+    private bool _globalHotkeys;
 
     public string Gamepath
     {
         get => _gamepath;
         set
         {
-            if (_gamepath == value)
-                return;
-
             _gamepath = value;
             OnPropertyChanged(nameof(Gamepath));
         }
@@ -25,9 +26,6 @@ public class AppSettings : OberservableObject
         get => _steampath;
         set
         {
-            if (_steampath == value)
-                return;
-
             _steampath = value;
             OnPropertyChanged(nameof(Steampath));
         }
@@ -37,11 +35,27 @@ public class AppSettings : OberservableObject
         get => _checkForUpdates;
         set
         {
-            if (_checkForUpdates == value)
-                return;
-
             _checkForUpdates = value;
             OnPropertyChanged(nameof(CheckforUpdates));
         }
     }
+    public bool StaysOnTop
+    {
+        get => _staysOnTop;
+        set
+        {
+            _staysOnTop = value;
+            OnPropertyChanged(nameof(StaysOnTop));
+        }
+    }
+    public bool GlobalHotkeys
+    {
+        get => _globalHotkeys;
+        set
+        {
+            _globalHotkeys = value;
+            OnPropertyChanged(nameof(GlobalHotkeys));
+        }
+    }
+    public List<HotKeyActions> KeyActions { get; set; } = [];
 }

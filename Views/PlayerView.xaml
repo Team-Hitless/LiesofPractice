@@ -88,8 +88,8 @@
             <CheckBox Grid.Row="0" Grid.Column="1" Content="No Death" IsChecked="{Binding IsNoDeathEnabled}" />
             <CheckBox Grid.Row="1" Grid.Column="0" Content="Infinite Fable" IsChecked="{Binding IsInfiniteFableEnabled}" />
             <CheckBox Grid.Row="1" Grid.Column="1" Content="One Shot" IsChecked="{Binding IsOneShotEnabled}" />
-            <CheckBox Grid.Row="2" Grid.Column="0" Content="Infinite Consumables" IsChecked="{Binding IsInfiniteConsumablesEnabled}" />
-            <CheckBox Grid.Row="2" Grid.Column="1" Content="No Ergo Loss on Death" IsChecked="{Binding IsNoErgoLossEnabled}" />
+            <CheckBox Grid.Row="2" Grid.Column="0" Content="Infinite Consumables" IsChecked="{Binding IsInfiniteConsumablesEnabled}"/>
+            <CheckBox Grid.Row="2" Grid.Column="1" Content="No Ergo Loss on Death" IsChecked="{Binding IsNoErgoLossEnabled}"/>
         </Grid>
         
         <Grid Grid.Row="4">

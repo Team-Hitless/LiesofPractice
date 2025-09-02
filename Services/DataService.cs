@@ -3,23 +3,39 @@ using LiesOfPractice.Interfaces;
 using LiesOfPractice.Models;
 using LiesOfPractice.Properties;
 using LiesOfPractice.Viewmodels;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace LiesOfPractice.Services;
 
 public class DataService : OberservableObject, IDataService
 {
-    private readonly INavigationService _navigationService;
-    private Page? _selectedPage;
+    static readonly string _path = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\LiesOfPractice";
+    static readonly string _filePath = $@"{_path}\Settings.json";
+    
 
-    public DataService(INavigationService navigationService)
+    private readonly INavigationService _navigationService;
+    private readonly IJsonService _jsonService;
+    private Page? _selectedPage;
+    private bool _isLoaded;
+
+    public DataService(INavigationService navigationService, IJsonService jsonService)
     {
         _navigationService = navigationService;
+        _jsonService = jsonService;
         LoadAppSettings();
         InitPages();
     }
-    private Settings Settings { get; set; } = new();
-
+    public bool IsLoaded
+    {
+        get => _isLoaded;
+        set
+        {
+            _isLoaded = value;
+            OnPropertyChanged(nameof(IsLoaded));
+        }
+    }
     public AppSettings AppSettings { get; set; } = new();
     public ObservableCollection<Page> Pages { get; set; } = [];
     public Page? SelectedPage
@@ -35,24 +51,8 @@ public class DataService : OberservableObject, IDataService
             _selectedPage?.Command.Execute(null);
         }
     }
-
-    private void LoadAppSettings()
-    {
-        Settings.Reload();
-
-        AppSettings.CheckforUpdates = Settings.CheckforUpdates;
-        AppSettings.Gamepath = Settings.Gamepath;
-        AppSettings.Steampath = Settings.Steampath;
-    }
-
-    public void SaveAppSettings()
-    {
-        Settings.CheckforUpdates = AppSettings.CheckforUpdates;
-        Settings.Gamepath = AppSettings.Gamepath;
-        Settings.Steampath = AppSettings.Steampath;
-
-        Settings.Save();
-    }
+    private async void LoadAppSettings() => AppSettings = await _jsonService.DeserializeAsync<AppSettings>(_filePath);
+    public void SaveAppSettings() => _jsonService.SerializeAsync(AppSettings, _path, _filePath);
 
     private void InitPages()
     {
@@ -62,7 +62,7 @@ public class DataService : OberservableObject, IDataService
             new Page {Name = "Utility", Command = new DelegateCommand(obj => _navigationService.NavigateTo<PlayerViewModel>())},
             new Page {Name = "Enemies", Command = new DelegateCommand(obj => _navigationService.NavigateTo<PlayerViewModel>())},
             new Page {Name = "Items", Command = new DelegateCommand(obj => _navigationService.NavigateTo<PlayerViewModel>())},
-            new Page {Name = "Settings", Command = new DelegateCommand(obj => _navigationService.NavigateTo<PlayerViewModel>())},
+            new Page {Name = "Settings", Command = new DelegateCommand(obj => _navigationService.NavigateTo<SettingsViewModel>())},
         ];
         SelectedPage = Pages[0];
     }

@@ -6,14 +6,21 @@ namespace LiesOfPractice.Services;
 
 public class JsonService : IJsonService
 {
-    public async void SerializeAsync<T>(T obj, string outputPath)
+    public async void SerializeAsync<T>(T obj, string outputPath, string filepath)
     {
-        await File.WriteAllTextAsync(outputPath, JsonConvert.SerializeObject(obj));
+        if (!Directory.Exists(outputPath))
+            Directory.CreateDirectory(outputPath);
+
+        await File.WriteAllTextAsync(filepath, JsonConvert.SerializeObject(obj));
     }
 
-    public async Task<T> DeserializeAsync<T>(string inputPath) where T : new()
+    public async Task<T> DeserializeAsync<T>(string filepath) where T : new()
     {
-        var text = await File.ReadAllTextAsync(inputPath);
-        return JsonConvert.DeserializeObject<T>(text) ?? new T();
+        if (File.Exists(filepath))
+        {
+            var text = await File.ReadAllTextAsync(filepath);
+            return JsonConvert.DeserializeObject<T>(text) ?? new T();
+        }
+        return new T();
     }
 }

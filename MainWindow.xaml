@@ -7,13 +7,12 @@
         xmlns:local="clr-namespace:LiesOfPractice"
         xmlns:vm="clr-namespace:LiesOfPractice.Viewmodels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
-        mc:Ignorable="d"
-        Title="Lies of Practice" 
-        Height="650" Width="500" 
-        MinHeight="350" MinWidth="300"
+        mc:Ignorable="d" Title="Lies of Practice" 
+        Height="650" Width="800" MinHeight="350" MinWidth="300"
         WindowStartupLocation="CenterScreen"
         ui:ThemeManager.IsThemeAware="True"
-        ui:WindowHelper.UseModernWindowStyle="True">
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Topmost="{Binding AppSettings.StaysOnTop}">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> 
@@ -100,7 +99,7 @@
             </ListView.ItemTemplate>
         </ListView>
         <ui:ScrollViewerEx Grid.Column="1" Grid.Row="1">
-            <ContentControl Content="{Binding CurrentView}" IsTabStop="False"
+            <ContentControl Content="{Binding NavigationService.CurrentView}" IsTabStop="False"
                             FocusVisualStyle="{x:Null}"/>
         </ui:ScrollViewerEx>
     </Grid>

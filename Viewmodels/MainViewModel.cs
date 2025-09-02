@@ -81,10 +81,9 @@ public class MainViewModel : ViewModelBase
         set => _dataService.SelectedPage = value;
     }
 
-    public ViewModelBase CurrentView
+    public INavigationService NavigationService
     {
-        get => _navigationService.CurrentView;
-        set => _navigationService.CurrentView = value;
+        get => _navigationService;
     }
 
     #endregion
@@ -104,6 +103,7 @@ public class MainViewModel : ViewModelBase
     {
         if (_memoryIo.IsAttached)
         {
+            _dataService.IsLoaded = true;
             IsAttached = true;
             if (!_hasScanned)
             {
@@ -124,6 +124,7 @@ public class MainViewModel : ViewModelBase
             IsAttached = false;
             _hasScanned = false;
             _hasAllocatedMem = false;
+            _dataService.IsLoaded = false;
         }
     }
 

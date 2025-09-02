@@ -13,10 +13,14 @@
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
                 <!-- Other merged dictionaries here -->
                 <ResourceDictionary Source="/Styles/Button.xaml"/>
+                <ResourceDictionary Source="/Styles/Textbox.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
             <DataTemplate DataType="{x:Type vm:PlayerViewModel}">
                 <views:PlayerView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                <views:SettingsView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
