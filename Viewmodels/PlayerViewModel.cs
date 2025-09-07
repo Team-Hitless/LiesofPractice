@@ -28,20 +28,23 @@ public class PlayerViewModel : ViewModelBase
         SavePositionCommand = new DelegateCommand(SavePosition);
         RestorePositionCommand = new DelegateCommand(RestorePosition);
         RestCommand = new DelegateCommand(Rest);
+        
 
         AreOptionsEnabled = true; // True for now, need to find a way to detect if player is in game
 
         RegisterHotkeys();
     }
-    
+
     #region Commands
-    
+
     public ICommand SavePositionCommand { get; set; }
+
     public ICommand RestorePositionCommand { get; set; }
+
     public ICommand RestCommand { get; set; }
 
     #endregion
-    
+
     #region Public Properies
     
     public bool AreOptionsEnabled 
@@ -128,11 +131,12 @@ public class PlayerViewModel : ViewModelBase
             _playerService.ToggleNoErgoLossOnDeath(_isNoErgoLossEnabled);
         } 
     }
-    
+
     #endregion
-    
+
     #region Private Methods
     
+
     private void SavePosition(object parameter)
     {
         int index = Convert.ToInt32(parameter);
@@ -140,6 +144,7 @@ public class PlayerViewModel : ViewModelBase
         if (index == 0) IsPos1Saved = true;
         else IsPos2Saved = true;
     }
+
     private void RestorePosition(object parameter) => _playerService.RestorePos(Convert.ToInt32(parameter));
 
     private void Rest(object? obj) => _playerService.Rest();

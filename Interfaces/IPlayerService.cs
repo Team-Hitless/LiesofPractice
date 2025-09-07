@@ -10,4 +10,6 @@ public interface IPlayerService
     void ToggleInfiniteConsumables(bool isEnabled);
     void ToggleNoErgoLossOnDeath(bool isEnabled);
     void Rest();
+    void SetHp(int hp);
+    int GetAttribute(int attributeOffset);
 }

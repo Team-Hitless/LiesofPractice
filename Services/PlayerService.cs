@@ -69,4 +69,21 @@ public class PlayerService(IMemoryIoService memoryIo) : IPlayerService
         ]);
         memoryIo.AllocateAndExecute(bytes);
     }
+
+    public void SetHp(int hp)
+    {
+        var attributesBase = memoryIo.FollowPointers(PlayerBase.Base, PlayerBase.Offsets.PlayerAttributesEntity, true);
+        var uiHpPtr1 = memoryIo.FollowPointers(PlayerBase.Base, PlayerBase.Offsets.UiHpWriteChain1, false);
+        var uiHpPtr2 = memoryIo.FollowPointers(PlayerBase.Base, PlayerBase.Offsets.UiHpWriteChain2, false);
+        
+        memoryIo.WriteInt32(attributesBase + (int)PlayerBase.Offsets.Attributes.Health, hp);
+        memoryIo.WriteFloat(uiHpPtr1, hp);
+        memoryIo.WriteFloat(uiHpPtr2, hp);
+    }
+
+    public int GetAttribute(int attributeOffset)
+    {
+        var attributesBase = memoryIo.FollowPointers(PlayerBase.Base, PlayerBase.Offsets.PlayerAttributesEntity, true);
+        return memoryIo.ReadInt32(attributesBase + attributeOffset);
+    }
 }
