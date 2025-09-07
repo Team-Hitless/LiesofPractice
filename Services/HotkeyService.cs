@@ -83,6 +83,8 @@ public class HotkeyService : IHotkeyService
         var keyAction = HotKeyActions.Find(x => x.ActionTag == actionTag);
         if (keyAction != null)
             keyAction.Action = action;
+        else
+            HotKeyActions.Add(new() { Action = action, ActionTag = actionTag });
     }
 
     public void SetHotkey(ActionTag actionTag, Keys keys)
@@ -92,7 +94,6 @@ public class HotkeyService : IHotkeyService
             keyAction.Keys = keys;
         else
             HotKeyActions.Add(new() { ActionTag = actionTag, Keys = keys });
-
     }
 
     public void ClearHotkey(ActionTag actionTag)
