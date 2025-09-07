@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LiesOfPractice.Memory;
+﻿namespace LiesOfPractice.Memory;
 
 public static class Offsets
 {
@@ -14,6 +12,19 @@ public static class Offsets
             public const int PlayerEntity = 0x20;
             
             public static readonly int[] PlayerPosPtrChain = [PlayerEntityPtr, PlayerEntity, 0xF0, 0x1C0];
+            public static readonly int[] PlayerAttributesEntity = [PlayerEntityPtr, PlayerEntity, 0x8C0, 0xE0, 0x28];
+
+            public enum Attributes
+            {
+                Health = 0xC,
+                Stam = 0x3C,
+                Fable = 0x6C,
+                Legion = 0xCC,
+                
+            }
+
+            public static readonly int[] UiHpWriteChain1 = [0x78, 0x20, 0x310, 0x2C8, 0x28, 0x68, 0x28];
+            public static readonly int[] UiHpWriteChain2 = [0x78, 0x20, 0x310, 0x2C0, 0x28, 0x68, 0x28];
         }
     }
 

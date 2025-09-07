@@ -1,7 +1,9 @@
 ﻿using System.Windows.Input;
 using LiesOfPractice.Core;
+using LiesOfPractice.Enums;
 using LiesOfPractice.Interfaces;
 using LiesOfPractice.Memory;
+using LiesOfPractice.Services;
 
 namespace LiesOfPractice.Viewmodels;
 
@@ -12,32 +14,37 @@ public class PlayerViewModel : ViewModelBase
     public PlayerViewModel(IPlayerService playerService)
     {
         _playerService = playerService;
+     
         SavePositionCommand = new DelegateCommand(SavePosition);
         RestorePositionCommand = new DelegateCommand(RestorePosition);
         RestCommand = new DelegateCommand(Rest);
+        
 
         AreOptionsEnabled = true; // True for now, need to find a way to detect if player is in game
     }
-    
+
     #region Commands
-    
+
     public ICommand SavePositionCommand { get; set; }
+
     public ICommand RestorePositionCommand { get; set; }
+
     public ICommand RestCommand { get; set; }
 
     #endregion
-    
+
     #region Public Properies
-    
-    
+
     private bool _areOptionsEnabled;
+
     public bool AreOptionsEnabled 
     { 
         get => _areOptionsEnabled; 
         set { _areOptionsEnabled = value; OnPropertyChanged(nameof(AreOptionsEnabled)); } 
     }
-    
+
     private bool _isPos1Saved;
+
     public bool IsPos1Saved 
     { 
         get => _isPos1Saved; 
@@ -45,13 +52,15 @@ public class PlayerViewModel : ViewModelBase
     }
 
     private bool _isPos2Saved;
+
     public bool IsPos2Saved 
     { 
         get => _isPos2Saved; 
         set { _isPos2Saved = value; OnPropertyChanged(nameof(IsPos2Saved)); } 
     }
-    
+
     private bool _isNoDamageEnabled;
+
     public bool IsNoDamageEnabled 
     { 
         get => _isNoDamageEnabled; 
@@ -64,6 +73,7 @@ public class PlayerViewModel : ViewModelBase
     }
 
     private bool _isNoDeathEnabled;
+
     public bool IsNoDeathEnabled 
     { 
         get => _isNoDeathEnabled; 
@@ -76,6 +86,7 @@ public class PlayerViewModel : ViewModelBase
     }
 
     private bool _isInfiniteFableEnabled;
+
     public bool IsInfiniteFableEnabled 
     { 
         get => _isInfiniteFableEnabled; 
@@ -88,6 +99,7 @@ public class PlayerViewModel : ViewModelBase
     }
 
     private bool _isOneShotEnabled;
+
     public bool IsOneShotEnabled 
     { 
         get => _isOneShotEnabled;
@@ -98,8 +110,9 @@ public class PlayerViewModel : ViewModelBase
             _playerService.ToggleChrDebugFlagA(_isOneShotEnabled, (int)Offsets.DebugFlagsBaseA.Flags.OneShot);
         } 
     }
-    
+
     private bool _isInfiniteConsumablesEnabled;
+
     public bool IsInfiniteConsumablesEnabled 
     { 
         get => _isInfiniteConsumablesEnabled;
@@ -110,8 +123,9 @@ public class PlayerViewModel : ViewModelBase
             _playerService.ToggleInfiniteConsumables(_isInfiniteConsumablesEnabled);
         } 
     }
-    
+
     private bool _isNoErgoLossEnabled;
+
     public bool IsNoErgoLossEnabled 
     { 
         get => _isNoErgoLossEnabled;
@@ -122,11 +136,12 @@ public class PlayerViewModel : ViewModelBase
             _playerService.ToggleNoErgoLossOnDeath(_isNoErgoLossEnabled);
         } 
     }
-    
+
     #endregion
-    
+
     #region Private Methods
     
+
     private void SavePosition(object parameter)
     {
         int index = Convert.ToInt32(parameter);
@@ -134,11 +149,10 @@ public class PlayerViewModel : ViewModelBase
         if (index == 0) IsPos1Saved = true;
         else IsPos2Saved = true;
     }
+
     private void RestorePosition(object parameter) => _playerService.RestorePos(Convert.ToInt32(parameter));
 
     private void Rest(object? obj) => _playerService.Rest();
-
-
 
     #endregion
 }
