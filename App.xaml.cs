@@ -35,15 +35,16 @@ public partial class App : Application
 
         services.AddTransient<GitHubViewModel>();
 
-        services.AddSingleton<Func<Type, ViewModelBase>>(sp => type =>
-        {
-            return (ViewModelBase)sp.GetRequiredService(type);
-        });
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<PlayerViewModel>();
         services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<AoBScanner>();
         services.AddSingleton<TempService>();
+
+        services.AddSingleton<Func<Type, ViewModelBase>>(sp => type =>
+        {
+            return (ViewModelBase)sp.GetRequiredService(type);
+        });
 
         services.AddSingleton(sp => new MainWindow()
         {

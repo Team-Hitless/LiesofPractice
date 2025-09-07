@@ -38,6 +38,8 @@ public class MainViewModel : ViewModelBase
         };
         _gameTimer.Tick += Timer_Tick;
         _gameTimer.Start();
+
+        SelectedPage = Pages[0];
     }
 
     #region Commands

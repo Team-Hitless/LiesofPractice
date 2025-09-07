@@ -1,22 +1,37 @@
-﻿using System.Windows.Input;
-using LiesOfPractice.Core;
+﻿using LiesOfPractice.Core;
+using LiesOfPractice.Enums;
 using LiesOfPractice.Interfaces;
 using LiesOfPractice.Memory;
+using System.Windows.Input;
 
 namespace LiesOfPractice.Viewmodels;
 
 public class PlayerViewModel : ViewModelBase
 {
     private readonly IPlayerService _playerService;
+    private readonly IHotkeyService _hotkeyService;
 
-    public PlayerViewModel(IPlayerService playerService)
+    private bool _areOptionsEnabled;
+    private bool _isPos1Saved;
+    private bool _isPos2Saved;
+    private bool _isNoDamageEnabled;
+    private bool _isNoDeathEnabled;
+    private bool _isOneShotEnabled;
+    private bool _isInfiniteConsumablesEnabled;
+    private bool _isNoErgoLossEnabled;
+    private bool _isInfiniteFableEnabled;
+
+    public PlayerViewModel(IPlayerService playerService, IHotkeyService hotkeyService)
     {
         _playerService = playerService;
+        _hotkeyService = hotkeyService;
         SavePositionCommand = new DelegateCommand(SavePosition);
         RestorePositionCommand = new DelegateCommand(RestorePosition);
         RestCommand = new DelegateCommand(Rest);
 
         AreOptionsEnabled = true; // True for now, need to find a way to detect if player is in game
+
+        RegisterHotkeys();
     }
     
     #region Commands
@@ -29,65 +44,58 @@ public class PlayerViewModel : ViewModelBase
     
     #region Public Properies
     
-    
-    private bool _areOptionsEnabled;
     public bool AreOptionsEnabled 
     { 
         get => _areOptionsEnabled; 
         set { _areOptionsEnabled = value; OnPropertyChanged(nameof(AreOptionsEnabled)); } 
     }
     
-    private bool _isPos1Saved;
     public bool IsPos1Saved 
     { 
         get => _isPos1Saved; 
         set { _isPos1Saved = value; OnPropertyChanged(nameof(IsPos1Saved)); } 
     }
-
-    private bool _isPos2Saved;
+    
     public bool IsPos2Saved 
     { 
         get => _isPos2Saved; 
         set { _isPos2Saved = value; OnPropertyChanged(nameof(IsPos2Saved)); } 
-    }
+    }  
     
-    private bool _isNoDamageEnabled;
     public bool IsNoDamageEnabled 
     { 
         get => _isNoDamageEnabled; 
         set
         {
             _isNoDamageEnabled = value;
-            OnPropertyChanged(nameof(_isNoDamageEnabled));
+            OnPropertyChanged(nameof(IsNoDamageEnabled));
             _playerService.ToggleChrDebugFlagA(_isNoDamageEnabled, (int)Offsets.DebugFlagsBaseA.Flags.NoDamage);
         } 
     }
-
-    private bool _isNoDeathEnabled;
+    
     public bool IsNoDeathEnabled 
     { 
         get => _isNoDeathEnabled; 
         set
         {
             _isNoDeathEnabled = value;
-            OnPropertyChanged(nameof(_isNoDeathEnabled));
+            OnPropertyChanged(nameof(IsNoDeathEnabled));
             _playerService.ToggleChrDebugFlagA(_isNoDeathEnabled, (int)Offsets.DebugFlagsBaseA.Flags.ChrNoDeath);
         } 
     }
 
-    private bool _isInfiniteFableEnabled;
     public bool IsInfiniteFableEnabled 
     { 
         get => _isInfiniteFableEnabled; 
         set
         {
             _isInfiniteFableEnabled = value;
-            OnPropertyChanged(nameof(_isInfiniteFableEnabled));
+            OnPropertyChanged(nameof(IsInfiniteFableEnabled));
             _playerService.ToggleChrDebugFlagA(_isInfiniteFableEnabled, (int)Offsets.DebugFlagsBaseA.Flags.InfiniteFable);
         } 
     }
 
-    private bool _isOneShotEnabled;
+    
     public bool IsOneShotEnabled 
     { 
         get => _isOneShotEnabled;
@@ -97,9 +105,8 @@ public class PlayerViewModel : ViewModelBase
             OnPropertyChanged(nameof(IsOneShotEnabled));
             _playerService.ToggleChrDebugFlagA(_isOneShotEnabled, (int)Offsets.DebugFlagsBaseA.Flags.OneShot);
         } 
-    }
+    }  
     
-    private bool _isInfiniteConsumablesEnabled;
     public bool IsInfiniteConsumablesEnabled 
     { 
         get => _isInfiniteConsumablesEnabled;
@@ -110,8 +117,7 @@ public class PlayerViewModel : ViewModelBase
             _playerService.ToggleInfiniteConsumables(_isInfiniteConsumablesEnabled);
         } 
     }
-    
-    private bool _isNoErgoLossEnabled;
+       
     public bool IsNoErgoLossEnabled 
     { 
         get => _isNoErgoLossEnabled;
@@ -138,7 +144,19 @@ public class PlayerViewModel : ViewModelBase
 
     private void Rest(object? obj) => _playerService.Rest();
 
-
+    private void RegisterHotkeys()
+    {
+        _hotkeyService.RegisterAction(ActionTag.InfiniteConsumables, () => { IsInfiniteConsumablesEnabled = !IsInfiniteConsumablesEnabled; });
+        _hotkeyService.RegisterAction(ActionTag.NoErgoLossOnDeath, () => { IsNoErgoLossEnabled = !IsNoErgoLossEnabled; });
+        _hotkeyService.RegisterAction(ActionTag.OneShot, () => { IsOneShotEnabled = !IsOneShotEnabled; });
+        _hotkeyService.RegisterAction(ActionTag.InfiniteFable, () => { IsInfiniteFableEnabled = !IsInfiniteFableEnabled; });
+        _hotkeyService.RegisterAction(ActionTag.NoDeath, () => { IsNoDeathEnabled = !IsNoDeathEnabled; });
+        _hotkeyService.RegisterAction(ActionTag.NoDamage, () => { IsNoDamageEnabled = !IsNoDamageEnabled; });
+        _hotkeyService.RegisterAction(ActionTag.SavePos1, () => SavePosition(0));
+        _hotkeyService.RegisterAction(ActionTag.SavePos2, () => SavePosition(1));
+        _hotkeyService.RegisterAction(ActionTag.RestorePos1, () => RestorePosition(0));
+        _hotkeyService.RegisterAction(ActionTag.RestorePos2, () => RestorePosition(1));
+    }
 
     #endregion
 }

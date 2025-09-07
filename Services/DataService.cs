@@ -1,11 +1,8 @@
 ﻿using LiesOfPractice.Core;
 using LiesOfPractice.Interfaces;
 using LiesOfPractice.Models;
-using LiesOfPractice.Properties;
 using LiesOfPractice.Viewmodels;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-using System.IO;
 
 namespace LiesOfPractice.Services;
 
@@ -64,6 +61,5 @@ public class DataService : OberservableObject, IDataService
             new Page {Name = "Items", Command = new DelegateCommand(obj => _navigationService.NavigateTo<PlayerViewModel>())},
             new Page {Name = "Settings", Command = new DelegateCommand(obj => _navigationService.NavigateTo<SettingsViewModel>())},
         ];
-        SelectedPage = Pages[0];
     }
 }

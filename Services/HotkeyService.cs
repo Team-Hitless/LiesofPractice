@@ -55,10 +55,10 @@ public class HotkeyService : IHotkeyService
         if (!IsGameFocused())
             return;
 
-        var hotKeyAction = HotKeyActions.First(x => x.Keys == e.Keys);
+        var hotKeyAction = HotKeyActions.Where(x => x.Keys is not null && x.Keys == e.Keys).FirstOrDefault();
 
-        if (hotKeyAction.Action is not null)
-            hotKeyAction?.Action?.Invoke();
+        if (hotKeyAction?.Action is not null)
+            hotKeyAction.Action.Invoke();
     }
 
     private bool IsGameFocused()
@@ -76,7 +76,7 @@ public class HotkeyService : IHotkeyService
     public void Start() => _keyboardHook?.Start();
     public void Stop() => _keyboardHook?.Stop();
     public Keys? GetHotkey(ActionTag actionTag) => HotKeyActions.Find(x => x.ActionTag == actionTag)?.Keys;
-    public ActionTag? GetActionTagByKeys(Keys keys) => HotKeyActions.Find(x => x.Keys == keys)?.ActionTag;
+    public ActionTag? GetActionTagByKeys(Keys keys) => HotKeyActions.Find(x => x.Keys is not null && x.Keys == keys)?.ActionTag;
 
     public void RegisterAction(ActionTag actionTag, Action action)
     {
@@ -99,7 +99,7 @@ public class HotkeyService : IHotkeyService
     {
         var keyAction = HotKeyActions.Find(x => x.ActionTag == actionTag);
         if (keyAction != null)
-            HotKeyActions.Remove(keyAction);
+            keyAction.Keys = null;
     }
     #endregion
 }

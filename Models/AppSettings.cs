@@ -1,6 +1,6 @@
-﻿using H.Hooks;
+﻿using LiesOfPractice.Converters;
 using LiesOfPractice.Core;
-using System.Globalization;
+using Newtonsoft.Json;
 
 namespace LiesOfPractice.Models;
 
@@ -57,5 +57,6 @@ public class AppSettings : OberservableObject
             OnPropertyChanged(nameof(GlobalHotkeys));
         }
     }
+    [JsonConverter(typeof(HotkeyListConverter))]
     public List<HotKeyActions> KeyActions { get; set; } = [];
 }
