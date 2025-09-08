@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using LiesOfPractice.Memory;
 using System.Collections.ObjectModel;
+using LiesOfPractice.Enums;
 
 namespace LiesOfPractice.Viewmodels;
 
@@ -14,21 +15,28 @@ public class MainViewModel : ViewModelBase
     private readonly INavigationService _navigationService;
     private readonly IDataService _dataService;
     private readonly IMemoryIoService _memoryIo;
+    private readonly IEventService _eventService;
+    private readonly IGameStateService _gameStateService;
     private readonly AoBScanner _aoBScanner;
     private readonly DispatcherTimer _gameTimer;
 
-    private bool _hasScanned = false;
+    private bool _hasScanned;
     private bool _hasAllocatedMem;
+    private bool _loaded;
 
-    public MainViewModel(IGameLaunchService gameLaunchService, INavigationService navigationService, IMemoryIoService memoryIo, IDataService dataService, AoBScanner aoBScanner)
+    public MainViewModel(IGameLaunchService gameLaunchService, INavigationService navigationService,
+        IMemoryIoService memoryIo, IDataService dataService, AoBScanner aoBScanner, IEventService eventService,
+        IGameStateService gameStateService)
     {
         _gameLaunchService = gameLaunchService;
         _navigationService = navigationService;
+        _gameStateService = gameStateService;
         _memoryIo = memoryIo;
         _aoBScanner = aoBScanner;
+        _eventService = eventService;
 
         _dataService = dataService;
-        
+
         LaunchGameCommand = new DelegateCommand(LaunchGame);
         SelectGamepathCommand = new DelegateCommand(SelectGamepath);
 
@@ -99,6 +107,7 @@ public class MainViewModel : ViewModelBase
     #endregion
 
     #region Private Methods
+
     private void LaunchGame(object? obj) => _gameLaunchService.LaunchGame();
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -120,9 +129,25 @@ public class MainViewModel : ViewModelBase
                 Console.WriteLine($"Code cave: 0x{CodeCaveOffsets.Base.ToInt64():X}");
                 _hasAllocatedMem = true;
             }
+
+            if (_gameStateService.IsLoaded())
+            {
+                if (_loaded) return;
+                _loaded = true;
+                _eventService.Publish(GameEvent.Loaded);
+            }
+            else if (_loaded)
+            {
+                _eventService.Publish(GameEvent.NotLoaded);
+            }
         }
         else
         {
+            if (IsAttached)
+            {
+                _eventService.Publish(GameEvent.Detached);
+            }
+
             IsAttached = false;
             _hasScanned = false;
             _hasAllocatedMem = false;

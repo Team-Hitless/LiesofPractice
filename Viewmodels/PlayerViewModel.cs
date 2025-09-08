@@ -10,6 +10,7 @@ public class PlayerViewModel : ViewModelBase
 {
     private readonly IPlayerService _playerService;
     private readonly IHotkeyService _hotkeyService;
+    private readonly IEventService _eventService;
 
     private bool _areOptionsEnabled;
     private bool _isPos1Saved;
@@ -21,19 +22,20 @@ public class PlayerViewModel : ViewModelBase
     private bool _isNoErgoLossEnabled;
     private bool _isInfiniteFableEnabled;
 
-    public PlayerViewModel(IPlayerService playerService, IHotkeyService hotkeyService)
+    public PlayerViewModel(IPlayerService playerService, IHotkeyService hotkeyService, IEventService eventService)
     {
         _playerService = playerService;
         _hotkeyService = hotkeyService;
+        _eventService = eventService;
         SavePositionCommand = new DelegateCommand(SavePosition);
         RestorePositionCommand = new DelegateCommand(RestorePosition);
         RestCommand = new DelegateCommand(Rest);
         
-
-        AreOptionsEnabled = true; // True for now, need to find a way to detect if player is in game
-
         RegisterHotkeys();
+        _eventService.Subscribe(GameEvent.Loaded, OnGameLoaded);
+        _eventService.Subscribe(GameEvent.NotLoaded, OnGameNotLoaded);
     }
+
 
     #region Commands
 
@@ -159,9 +161,29 @@ public class PlayerViewModel : ViewModelBase
         _hotkeyService.RegisterAction(ActionTag.NoDamage, () => { IsNoDamageEnabled = !IsNoDamageEnabled; });
         _hotkeyService.RegisterAction(ActionTag.SavePos1, () => SavePosition(0));
         _hotkeyService.RegisterAction(ActionTag.SavePos2, () => SavePosition(1));
-        _hotkeyService.RegisterAction(ActionTag.RestorePos1, () => RestorePosition(0));
-        _hotkeyService.RegisterAction(ActionTag.RestorePos2, () => RestorePosition(1));
+        _hotkeyService.RegisterAction(ActionTag.RestorePos1, () =>
+        {
+            if (!IsPos1Saved) return;
+            RestorePosition(0);
+        });
+        _hotkeyService.RegisterAction(ActionTag.RestorePos2, () =>
+        {
+            if (!IsPos2Saved) return;
+            RestorePosition(1);
+        });
     }
+    
+    private void OnGameLoaded()
+    {
+        AreOptionsEnabled = true;
+    }
+    
+    
+    private void OnGameNotLoaded()
+    {
+        AreOptionsEnabled = false;
+    }
+
 
     #endregion
 }

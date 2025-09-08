@@ -1,7 +1,12 @@
 ﻿namespace LiesOfPractice.Memory;
 
-public class Pattern(byte[] bytes, string mask, int instructionOffset, AddressingMode addressingMode,
-    int offsetLocation = 0, int instructionLength = 0)
+public class Pattern(
+    byte[] bytes,
+    string mask,
+    int instructionOffset,
+    AddressingMode addressingMode,
+    int offsetLocation = 0,
+    int instructionLength = 0)
 {
     public byte[] Bytes { get; } = bytes;
     public string Mask { get; } = mask;
@@ -28,6 +33,8 @@ public static class Patterns
         3,
         7
     );
+    
+
 
     public static readonly Pattern ActivateAllTeleports = new(
         [0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, 0x83, 0x38, 0x00, 0x7F, 0xD7],
@@ -117,5 +124,4 @@ public static class Patterns
         1,
         5
     );
-    
 }

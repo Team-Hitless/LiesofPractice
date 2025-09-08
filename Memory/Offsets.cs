@@ -10,7 +10,7 @@ public static class Offsets
         {
             public const int PlayerEntityPtr = 0x0;
             public const int PlayerEntity = 0x20;
-            
+
             public static readonly int[] PlayerPosPtrChain = [PlayerEntityPtr, PlayerEntity, 0xF0, 0x1C0];
             public static readonly int[] PlayerAttributesEntity = [PlayerEntityPtr, PlayerEntity, 0x8C0, 0xE0, 0x28];
 
@@ -20,7 +20,6 @@ public static class Offsets
                 Stam = 0x3C,
                 Fable = 0x6C,
                 Legion = 0xCC,
-                
             }
 
             public static readonly int[] UiHpWriteChain1 = [0x78, 0x20, 0x310, 0x2C8, 0x28, 0x68, 0x28];
@@ -31,13 +30,11 @@ public static class Offsets
     public static class ActivateAllTeleports
     {
         public static IntPtr Base;
-
     }
-    
+
     public static class InfiniteConsumablesFlag
     {
         public static IntPtr Base;
-
     }
 
     public static class DebugFlagsBaseA
@@ -52,11 +49,12 @@ public static class Offsets
             OneShot = 0x4,
             EnableAi = 0x5, //Set to 1 by default, set to 0 to disable AI
             ChrNoDeath = 0x6,
-            UnknownFlag = 0x7, //Setting this to 1 when ChrNoDeath is enabled still kills the player, test more to find out what it does
+
+            UnknownFlag =
+                0x7, //Setting this to 1 when ChrNoDeath is enabled still kills the player, test more to find out what it does
         }
- 
     }
-    
+
     public static class DebugFlags
     {
         public static IntPtr Base;
@@ -214,7 +212,6 @@ public static class Offsets
     public static class Patches
     {
         public static IntPtr NoErgoLoss;
-   
     }
 
 

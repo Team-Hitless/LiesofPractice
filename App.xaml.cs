@@ -32,6 +32,8 @@ public partial class App : Application
         services.AddSingleton<IPlayerService, PlayerService>();
         services.AddSingleton<IItemService, ItemService>();
         services.AddSingleton<IHotkeyService, HotkeyService>();
+        services.AddSingleton<IEventService, EventService>();
+        services.AddSingleton<IGameStateService, GameStateService>();
 
         services.AddTransient<GitHubViewModel>();
 
