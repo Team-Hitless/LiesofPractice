@@ -33,7 +33,6 @@ public static class Patterns
         3,
         7
     );
-    
 
 
     public static readonly Pattern ActivateAllTeleports = new(
@@ -123,5 +122,12 @@ public static class Patterns
         AddressingMode.Relative,
         1,
         5
+    );
+
+    public static readonly Pattern UpdateHpUi = new Pattern(
+        [0x45, 0x85, 0xC0, 0x7E, 0x4A, 0x53],
+        "xxxxxx",
+        0,
+        AddressingMode.Absolute
     );
 }

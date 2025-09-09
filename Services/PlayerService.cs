@@ -73,12 +73,24 @@ public class PlayerService(IMemoryIoService memoryIo) : IPlayerService
     public void SetHp(int hp)
     {
         var attributesBase = memoryIo.FollowPointers(PlayerBase.Base, PlayerBase.Offsets.PlayerAttributesEntity, true);
-        var uiHpPtr1 = memoryIo.FollowPointers(PlayerBase.Base, PlayerBase.Offsets.UiHpWriteChain1, false);
-        var uiHpPtr2 = memoryIo.FollowPointers(PlayerBase.Base, PlayerBase.Offsets.UiHpWriteChain2, false);
-        
         memoryIo.WriteInt32(attributesBase + (int)PlayerBase.Offsets.Attributes.Health, hp);
-        memoryIo.WriteFloat(uiHpPtr1, hp);
-        memoryIo.WriteFloat(uiHpPtr2, hp);
+
+        var playerEntity = memoryIo.FollowPointers(PlayerBase.Base, new[]
+        {
+            PlayerBase.Offsets.PlayerEntityPtr,
+            PlayerBase.Offsets.PlayerEntity,
+        }, true);
+
+        var bytes = AsmLoader.GetAsmBytes("UpdateHpUi");
+        AsmHelper.WriteAbsoluteAddresses(bytes, new []
+        {
+            (playerEntity.ToInt64(), 0x4 + 2),
+            (hp, 0xE + 2),
+            (hp, 0x18 + 2),
+            (Funcs.UpdateHpUi, 0x22 + 2),
+        });
+        
+        memoryIo.AllocateAndExecute(bytes);
     }
 
     public int GetAttribute(int attributeOffset)

@@ -22,8 +22,6 @@ public static class Offsets
                 Legion = 0xCC,
             }
 
-            public static readonly int[] UiHpWriteChain1 = [0x78, 0x20, 0x310, 0x2C8, 0x28, 0x68, 0x28];
-            public static readonly int[] UiHpWriteChain2 = [0x78, 0x20, 0x310, 0x2C0, 0x28, 0x68, 0x28];
         }
     }
 
@@ -237,7 +235,7 @@ public static class Offsets
         public static long GetGiveItemEntity;
         public static long GiveItem;
         public static long GiveWeapon;
-        public static long ReinforceWeapon;
+        public static long UpdateHpUi;
         public static long InfuseWeapon;
         public static long Repair;
         public static long AllotEstus;

@@ -41,6 +41,7 @@ public class AoBScanner(IMemoryIoService memoryIo)
         Offsets.Funcs.GetGiveItemEntity = FindAddressByPattern(Patterns.GetGiveItemEntity).ToInt64();
         Offsets.Funcs.GiveItem = FindAddressByPattern(Patterns.GiveItem).ToInt64();
         Offsets.Funcs.GiveWeapon = FindAddressByPattern(Patterns.GiveWeapon).ToInt64();
+        Offsets.Funcs.UpdateHpUi = FindAddressByPattern(Patterns.UpdateHpUi).ToInt64();
 
 
 #if DEBUG
@@ -55,6 +56,7 @@ public class AoBScanner(IMemoryIoService memoryIo)
         Console.WriteLine($"Funcs.GetGiveItemEntity: 0x{Offsets.Funcs.GetGiveItemEntity:X}");
         Console.WriteLine($"Funcs.GiveItem: 0x{Offsets.Funcs.GiveItem:X}");
         Console.WriteLine($"Funcs.GiveWeapon: 0x{Offsets.Funcs.GiveWeapon:X}");
+        Console.WriteLine($"Funcs.UpdateHpUi: 0x{Offsets.Funcs.UpdateHpUi:X}");
 
 
         Console.WriteLine($"Patches.NoErgoLoss: 0x{Offsets.Patches.NoErgoLoss.ToInt64():X}");
