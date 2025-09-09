@@ -128,6 +128,7 @@ public class MainViewModel : ViewModelBase
                 _memoryIo.AllocCodeCave();
                 Console.WriteLine($"Code cave: 0x{CodeCaveOffsets.Base.ToInt64():X}");
                 _hasAllocatedMem = true;
+                _eventService.Publish(GameEvent.Attached);
             }
 
             if (_gameStateService.IsLoaded())
@@ -139,6 +140,7 @@ public class MainViewModel : ViewModelBase
             else if (_loaded)
             {
                 _eventService.Publish(GameEvent.NotLoaded);
+                _loaded = false;
             }
         }
         else

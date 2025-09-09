@@ -103,7 +103,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
    
-            <Button Grid.Row="0" Grid.Column="0" Content="Rest"     Command="{Binding RestCommand}"  />
+            <Button Grid.Row="0" Grid.Column="0" 
+                    Content="Rest"     
+                    Command="{Binding RestCommand}"
+                    IsEnabled="{Binding AreOptionsEnabled}"/>
             <!-- <CheckBox Grid.Row="0" Grid.Column="2" Content="No Death" IsChecked="{Binding IsNoDeathEnabled}" /> -->
             <!-- <CheckBox Grid.Row="0" Grid.Column="1" Content="Infinite Fable" IsChecked="{Binding IsInfiniteFableEnabled}" /> -->
             <!-- <CheckBox Grid.Row="1" Grid.Column="0" Content="One Shot" IsChecked="{Binding IsOneShotEnabled}" /> -->

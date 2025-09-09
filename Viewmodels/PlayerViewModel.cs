@@ -176,6 +176,19 @@ public class PlayerViewModel : ViewModelBase
     private void OnGameLoaded()
     {
         AreOptionsEnabled = true;
+        if (IsNoDamageEnabled)
+            _playerService.ToggleChrDebugFlagA(true, (int)Offsets.DebugFlagsBaseA.Flags.NoDamage);
+        if (IsNoDeathEnabled)
+            _playerService.ToggleChrDebugFlagA(true, (int)Offsets.DebugFlagsBaseA.Flags.ChrNoDeath);
+        if (IsInfiniteFableEnabled)
+            _playerService.ToggleChrDebugFlagA(true, (int)Offsets.DebugFlagsBaseA.Flags.InfiniteFable);
+        if (IsOneShotEnabled)
+            _playerService.ToggleChrDebugFlagA(true, (int)Offsets.DebugFlagsBaseA.Flags.OneShot);
+        if (IsInfiniteConsumablesEnabled)
+            _playerService.ToggleInfiniteConsumables(true);
+        if (IsNoErgoLossEnabled)
+            _playerService.ToggleNoErgoLossOnDeath(true);
+            
     }
     
     
