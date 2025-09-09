@@ -14,7 +14,9 @@ public class PlayerService(IMemoryIoService memoryIo) : IPlayerService
             PlayerBase.Offsets.PlayerEntityPtr,
             PlayerBase.Offsets.PlayerEntity,
         }, true);
+        
         var bytes = AsmLoader.GetAsmBytes("GiveErgo");
+        
         AsmHelper.WriteAbsoluteAddresses(bytes, [
             (playerEntity, 0x4 + 2),
             (amount, 0xE + 2),

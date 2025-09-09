@@ -20,6 +20,10 @@ public static class Offsets
                 Stam = 0x3C,
                 Fable = 0x6C, // 4000 per bar
                 Legion = 0xCC,
+                
+                MaxHealth = 0xD2C,
+                MaxStam = 0xD5C,
+                
             }
 
         }
