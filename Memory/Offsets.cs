@@ -18,7 +18,7 @@ public static class Offsets
             {
                 Health = 0xC,
                 Stam = 0x3C,
-                Fable = 0x6C,
+                Fable = 0x6C, // 4000 per bar
                 Legion = 0xCC,
             }
 

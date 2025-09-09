@@ -19,14 +19,14 @@ public class ItemService (IMemoryIoService memoryIo) : IItemService
         memoryIo.AllocateAndExecute(bytes);
     }
 
-    public void WeaponSpawn(Weapon weapon)
+    public void WeaponSpawn(int bladeId, int handleId)
     {
         var bytes = AsmLoader.GetAsmBytes("WeaponSpawn");
         
         AsmHelper.WriteAbsoluteAddresses(bytes, [
             (Funcs.GetGiveItemEntity, 0x04 + 2),
-            (weapon.BladeId, 0x17 + 2),
-            (weapon.HandleId, 0x21 + 2),
+            (bladeId, 0x17 + 2),
+            (handleId, 0x21 + 2),
             (Funcs.GiveWeapon, 0x32 + 2)
         ]);
         memoryIo.AllocateAndExecute(bytes);
